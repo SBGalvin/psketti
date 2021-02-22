@@ -91,7 +91,7 @@ spag_plot <- spaghetti_plot(ID = "ID", Item = "Item", K= "K", x = FakeData, eRm.
 spag_plot[["i06"]][[1]]
 ```
 
-![](Fake_Data_D_ICC_06.png)
+![](Fake_Data_Col_D_ICC_06.png)
 
 ``` r
 spag_plot <- spaghetti_plot(ID = "ID", Item = "Item", K= "K", x = FakeData, eRm.obj = fake_rm, 
