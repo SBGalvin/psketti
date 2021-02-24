@@ -4,7 +4,7 @@
 \alias{ingrediente}
 \title{Score Report Tables}
 \usage{
-\code{ingrediente(x = df, ID = "ID", Item = "Item, K = "K", K_options = r_o, Index = "Index")}
+\code{ingrediente(x = df, ID = "ID", Item = "Item", K = "K", K_options = r_o, Index = "Index")}
 }
 \arguments{
 \item{ID}{column name for ID column}
