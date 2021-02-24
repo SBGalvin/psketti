@@ -1,0 +1,25 @@
+Package: psketti
+Type: Package
+Title: Generating Investigatory Plots and Tables for Rasch Analysis
+Version: 0.1.0
+Author: Shane B. Galvin
+Maintainer: Shane B. Galvin <sbmgalvin@gmail.com>
+Description: psketti generates investigatory plots and tables to assist in Rasch Analysis by using a number of accessor, table, and plotting functions.
+    Data are extracted from dichotmous (RM) and partial credit (PCM) Rasch models fitted by Conditional Maximum Likelihood (CML) estimation in the eRm package.
+    Empirical Item Characteristic Curves (ICC) are computed by dividing the latent dimension into class intervals in which the frequency of response to a category is counted and presented as a proportion of that class interval.
+    Confidence Intervals for the Empirical ICC are also calculated. Infit and Outfit measures are also extracted for presentation as a simple diagnostic plot. 
+    Plots are compiled using ggplot2; for larger plotting routines plots are stored as list objects.
+Depends: R (>= 4.0.0)
+Imports: 
+    eRm (>= 1.0-1),
+    dplyr (>= 1.0.1),
+    ggplot2 (>= 3.3.2),
+    viridis (>= 0.5.1),
+    RColorBrewer (>= 1.1.2),
+    stats (>= 4.0.2)
+Suggests: 
+    tidyverse (>= 1.3.0)
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
