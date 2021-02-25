@@ -4,7 +4,16 @@
 \alias{spaghetti_plot_1}
 \title{Distractor Analysis Plots}
 \usage{
-\code{spaghetti_plot_1(x = df, Item = "Item", K = "K", response_options = r_o, eRm.obj = eRm.obj)}
+spaghetti_plot_1(
+  x,
+  ID,
+  Item,
+  K,
+  response_options,
+  eRm.obj,
+  p.style = "present",
+  distractor_colours = NULL
+)
 }
 \arguments{
 \item{x}{A long formatted dataframe}
@@ -15,49 +24,57 @@
 
 \item{K}{column name for column containing multiple choice responses.}
 
-\item{response_options}{An ordered factor object to arrange column order in the distractor table.}
+\item{response_options}{An ordered factor object to arrange column order in
+the distractor table.}
 
-\item{eRm.obj}{An object of class eRm and model RM. Use eRm::RM(score_data) to create this object.}
+\item{eRm.obj}{An object of class eRm and model RM. Use `eRm::RM(score_data)`
+to create this object.}
 
-\item{p.style}{Plot output style, "print" for black and white, or "present" for color.
-Defaults to "present".}
+\item{p.style}{Plot output style, "print" for black and white, or "present"
+for color. Defaults to "present".}
 
-\item{distractor_colours}{An optional vector of colours for distractor plot lines.
-Must be the same length as response_options. Defaults to NULL for viridis color palette.}
+\item{distractor_colours}{An optional vector of colours for distractor plot
+lines. Must be the same length as response_options. Defaults to `NULL`
+for viridis color palette.}
 }
 \value{
 Plot.List is a list object containing plots of empirical distractor
     proportions plotted against the dichotomous Rasch IRF.
 }
 \description{
-Implementation of a graphical (Asril and Marais, 2011) approach to assigning a partial credit scoring
-    system to data previously modeled with a dichotomous Rasch model. The function console output
-    prints object information and a list of items and generic example of how to coall the plot.
+Implementation of a graphical (Asril and Marais, 2011) approach
+    to assigning a partial credit scoring system to data previously estimated
+    with a dichotomous Rasch model. The function console output prints object
+    details, a list of items, and generic example of how to call the plot.
 }
 \examples{
 library(eRm)
 library(psketti)
+data("FakeData")
 Fake_Data_scores <- reshape(FakeData[, c("ID", "Item", "X")],
                             timevar = "Item",
                             idvar = "ID",
                             direction = "wide")
 
-names(Fake_Data_scores) <- c("ID",                                 # set column names to be equal to original item names
+# set column names to be equal to original item names
+names(Fake_Data_scores) <- c("ID",                                
                              paste0("i",
                                     sprintf(fmt  = "\%02d", 1:23)))
 
-row.names(Fake_Data_scores) <- Fake_Data_scores$ID                 # set particiant ID as row names
-Fake_Data_scores$ID         <- NULL                                # drop the ID column
-fake_rm                     <- RM(Fake_Data_scores)                # fit a Rasch Model with eRm
+row.names(Fake_Data_scores) <- Fake_Data_scores$ID  # set ID as row names
+Fake_Data_scores$ID         <- NULL                 # drop the ID column
+fake_rm                     <- RM(Fake_Data_scores) # fit a Rasch Model
 
 # response option categories
-r_o <- factor(sort(unique(FakeData$K)), levels = sort(unique(FakeData$K)), ordered = TRUE)
+r_o <- factor(sort(unique(FakeData$K)),
+              levels = sort(unique(FakeData$K)),
+              ordered = TRUE)
 
 spag_plot <- spaghetti_plot_1(ID = "ID",              # set ID column
                               Item = "Item",          # set Item column
-                              K= "K",                 # Set Response categories column
+                              K= "K",                 # Set resp categories 
                               x = FakeData,           # select data
-                              eRm.obj = fake_rm,      # select eRm object data
+                              eRm.obj = fake_rm,      # select eRm object
                               response_options = r_o, # set response options
                               p.style = "present")    # set plotting style
 }

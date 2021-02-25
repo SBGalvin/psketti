@@ -4,7 +4,7 @@
 \alias{tabliatelle}
 \title{Distractor Analysis Tables}
 \usage{
-\code{tabliatelle(x = df, ID = "ID", Item = "Item", K = "K", response_options = r_o, eRm.obj =eRm.obj)}
+tabliatelle(x, ID, Item, K, response_options, eRm.obj)
 }
 \arguments{
 \item{x}{A long formatted dataframe.}
@@ -15,26 +15,19 @@
 
 \item{K}{column name for column containing multiple choice responses.}
 
-\item{response_options}{An ordered factor object to arrange column order in the
-distractor table.}
+\item{response_options}{An ordered factor object to arrange column order in
+the distractor table.}
 
-\item{eRm.obj}{An object of class eRm and model RM. Use \code{eRm::RM(score_data)}
+\item{eRm.obj}{An object of class eRm and model RM. Use `eRm::RM(score_data)`
 to create this object.}
-
-\item{Key}{A vector of the Key (correct answer) or a single character or string.}
 }
 \value{
-tabliatelle returns a list of class tabliatelle containing three elements.
-
-Distractor Frequencies is a table containing frequencies for each
-    item and response option.
-
-Distractor Proportions is a table conatining proportions for each
-    item and response option
+tabliatelle returns a list of class tabliatelle.
 }
 \description{
-Implementation of the tabular (Styles and Andrich, 2009) approach to assigning a partial credit scoring system
-    to data previously modeled with a dichotomous Rasch model.
+Implementation of the tabular (Styles and Andrich, 2009)
+    approach to assigning a partial credit scoring system to data previously
+    modeled with a dichotomous Rasch model.
 }
 \examples{
 library(eRm)

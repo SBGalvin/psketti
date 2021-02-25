@@ -4,7 +4,7 @@
 \alias{pskettify}
 \title{pskettify your data}
 \usage{
-\code{pskettify(eRm.obj)}
+pskettify(eRm.obj, conf.level = 0.95, Theta.lwr = -6, Theta.upr = 6)
 }
 \arguments{
 \item{eRm.obj}{an eRm object of class 'RM'.}

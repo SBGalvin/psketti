@@ -20,9 +20,6 @@ Data were simulated according to suggestions in Linacre (2007).
 Data are stored in long format.
 }
 \examples{
-# Show fake item parameters
-data(FakeItems)
-
 # Show fake data
 data(FakeData)
 
