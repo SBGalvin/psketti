@@ -1,7 +1,7 @@
 ReadMe
 ================
 
-![](psketti_hex2.png)
+![](img/psketti_hex2.png)
 
 ## psketti
 
@@ -51,15 +51,15 @@ psk_6_present <- psketto(psk_data, item = "i01", style = "present", item.label =
 psk_6_present
 ```
 
-![](Fake_Data_IRF_01_Single_colour.png)
+![](img/Fake_Data_IRF_01_Single_colour.png)
 
 ``` r
 psk_6_print   <- psketto(psk_data, item = "i06", style = "print", item.label = "i06")     # black and white
 psk_6_print
 ```
 
-![](Fake_Data_IRF_01_Single_BW.png) …or use psketti() to plot ICC for
-all plots
+![](img/Fake_Data_IRF_01_Single_BW.png) …or use psketti() to plot ICC
+for all plots
 
 ``` r
 # plot ICC for one item
@@ -68,9 +68,9 @@ psk_IRF[["i06"]]
 psk_IRF[["i12"]]
 ```
 
-|          Call 1           |          Call 2           |
-| :-----------------------: | :-----------------------: |
-| ![](Fake_Data_IRF_06.png) | ![](Fake_Data_IRF_12.png) |
+|            Call 1             |            Call 2             |
+|:-----------------------------:|:-----------------------------:|
+| ![](img/Fake_Data_IRF_06.png) | ![](img/Fake_Data_IRF_12.png) |
 
 ## Investigate distractor options
 
@@ -91,7 +91,7 @@ spag_plot <- spaghetti_plot(ID = "ID", Item = "Item", K= "K", x = FakeData, eRm.
 spag_plot[["i06"]][[1]]
 ```
 
-![](Fake_Data_Col_D_ICC_06.png)
+![](img/Fake_Data_Col_D_ICC_06.png)
 
 ``` r
 spag_plot <- spaghetti_plot(ID = "ID", Item = "Item", K= "K", x = FakeData, eRm.obj = fake_rm, 
@@ -99,4 +99,4 @@ spag_plot <- spaghetti_plot(ID = "ID", Item = "Item", K= "K", x = FakeData, eRm.
 spag_plot[["i12"]][[1]]
 ```
 
-![](Fake_Data_BW_D_ICC_12.png)
+![](img/Fake_Data_BW_D_ICC_12.png)
