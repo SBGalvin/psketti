@@ -1,35 +1,33 @@
-#' @title Plot your pskettified data
+#' @title Plot Your pskettified Data
 #'
 #' @name psketti
 #'
-#' @description This function extracts data from an eRm object of class 'RM' and converts to a format for plotting data.
-#'     This also computes the empirical response values and empirical confidence intervals
+#' @description This function extracts data from an eRm object of class 'RM' and
+#'    converts to a format for plotting data. This also computes the empirical
+#'    response values and empirical confidence intervals
 #'
-#' @usage \code{psketti(pskettified_data)}
-#'
-#' @param pskettified_data a list object generated from eRm object class'RM' using \code{pskettify()}.
+#' @param pskettified_data a list object generated from eRm object class'RM'
+#'     using `pskettify()`.
 #' @param p.style a character string for plotting style options are present for
 #'     coloured plots, or print for black and white plots. Defaults to "present".
-#' @param p.IRFLocation logical, plots reference lines for Rasch IRF location. Defaults to TRUE.
-#' @param p.empCI logical, plots confidence intervals for empirical points, calculated using \code{pskettify()}.
-#'     Defaults to \code{TRUE}.
-#' @param p.empICC logical, plots empirical ICC for item. Defaults to TRUE.
-#' @param p.empPoints logical, plots empirical points for based on class intervals/ score
-#'     groups generated with \code{pskettify()}. Defaults to \code{TRUE}.
+#' @param p.IRFLocation logical, plots reference lines for Rasch IRF location.
+#'     Defaults to `TRUE`.
+#' @param p.empCI logical, plots confidence intervals for empirical points,
+#'     calculated using `pskettify()`. Defaults to `TRUE`.
+#' @param p.empICC logical, plots empirical ICC for item. Defaults to `TRUE`.
+#' @param p.empPoints logical, plots empirical points for based on class
+#'     intervals/ score groups generated with `pskettify()`. Defaults to `TRUE`.
 #'
-#' @return A list object containing multiple psketto plots each element contains the plot
-#'     object[[1]] and item name object[[2]]
+#' @return A list object containing multiple psketto plots.
 #'
 #' @importFrom ggplot2 ggplot aes geom_segment geom_point geom_line scale_colour_manual theme_minimal theme ylab xlab element_blank
-#' @importFrom psketti print.psketti
 #'
 #' @export
 #'
 #' @examples
 #' library(eRm)
-#' library(ggplot2)
 #' library(psketti)
-#' data(FakeData)  # load dataset fake data
+#' data("FakeData")  # load dataset fake data
 #'
 #' # Set up dataframe for eRm, long to wide with dichotmous data
 #' Fake_Data_scores <- reshape(FakeData[, c("ID", "Item", "X")],
@@ -40,9 +38,9 @@
 #' row.names(Fake_Data_scores) <- Fake_Data_scores$ID
 #' Fake_Data_scores$ID <- NULL
 #'
-#' fake_rm <- RM(Fake_Data_scores) # Fit Rasch Model
+#' fake_rm  <- RM(Fake_Data_scores) # Fit Rasch Model
 #'
-#' psk_data <-pskettify(eRm.obj = fake_rm)
+#' psk_data <- pskettify(eRm.obj = fake_rm)
 #'
 #' # plot ICC for all item
 #' psk_IRF <- psketti(psk_data)
@@ -51,7 +49,8 @@
 
 
 psketti <- function(pskettified_data, p.style = "present",
-                    p.IRFLocation = TRUE, p.empCI = TRUE, p.empICC = TRUE, p.empPoints = TRUE){
+                    p.IRFLocation = TRUE, p.empCI = TRUE, p.empICC = TRUE,
+                    p.empPoints = TRUE){
 
   x <- pskettified_data
   Model_type <- class(x)[2]
@@ -92,7 +91,7 @@ psketti <- function(pskettified_data, p.style = "present",
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
   # Return ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-  return(invisible(output_list)) # invisible prevents plots from automatically printing
+  return(invisible(output_list)) # invisible prevents plots from printing
   print.psketti(x = output_list)
 }
 
