@@ -4,23 +4,27 @@
 #'
 #' @description Generates score report for dataframe.
 #'
-#' @usage \code{ingrediente(x = df, ID = "ID", Item = "Item", K = "K", K_options = r_o, Index = "Index")}
-#'
+#' @param x a dataframe.
 #' @param ID column name for ID column
 #' @param Item column name for Item column
 #' @param Score a column name for response scores
 #' @param K column name for column containing multiple choice responses
-#' @param K_options An ordered factor object to arrange column order in the score table.
-#' @param Index Column name for order of administration per participant.
-#'    This can also be an ordered factor for the item names.
-#'    Orders the Response string. Defaults to \code{NULL}, using the items to order the response string.
+#' @param K_options An ordered factor object to arrange column order in the
+#'     score table.
+#' @param Index Column name for order of administration per participant. This
+#'    can also be an ordered factor for the item names. Orders the Response
+#'    string. Defaults to `NULL`, using the items to order the response string.
 #'
-#' @return Score reports for participants, with counts of category selection and a score string ordered by score string index
+#' @return Score reports for participants, with counts of category selection and
+#'     a score string ordered by score string index
+#'
+#' @importFrom stats reshape xtabs
 #'
 #' @export
 #'
 #' @examples
-#' data(FakeData)
+#' library(psketti)
+#' data("FakeData")
 #'
 #' K_opt <- factor(LETTERS[1:5], levels = LETTERS[1:5], ordered = TRUE)
 #' score_report <- ingrediente(x = FakeData,
@@ -64,7 +68,7 @@ ingrediente <- function(x, ID, Item, Score, K, K_options, Index){
     x["Index"] <- x[Item]
     Index      <- Item
 
-  }else if(is.ordered(Index) & !"xx" %in% colnames(FakeData)){
+  }else if(is.ordered(Index) & !"xx" %in% colnames(x)){
     # if the Index argument is an ordered factor and NOT already a column name:
 
     x[, "Index"]        <- as.factor(x[,"Item"])    # copy the item col to Index
