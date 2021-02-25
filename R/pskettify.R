@@ -6,8 +6,6 @@
 #'     converts to a format for plotting data. This also computes the empirical
 #'     response values and empirical confidence intervals.
 #'
-#' @usage \code{pskettify(eRm.obj)}
-#'
 #' @param eRm.obj an eRm object of class 'RM'.
 #' @param conf.level the confidence level for empirical response curve. Defaults to 0.95.
 #' @param Theta.lwr The lowest limit of the latent dimension. Defaults to -6.
@@ -19,6 +17,7 @@
 #' @return emp_ICC a dataframe containing proportion values and confidence intervals
 #'    for ability class intervals to each item.
 #'
+#' @importFrom stats qbeta coef reshape
 #' @export
 #'
 #' @examples
