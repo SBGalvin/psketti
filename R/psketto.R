@@ -2,23 +2,23 @@
 #'
 #' @name psketto
 #'
-#' @description psketto is singlular of psketti; (spaghetti <--> spaghetto).
-#'     This function plots the data for a single item from the output of pskettify()
-#'     psketto() is also used in psketti to create multiple ICC plots
+#' @description psketto is singlular of psketti; (spaghetti <--> spaghetto). 
+#'     This function plots the data for a single item from the output of 
+#'     `pskettify()`. `psketto()` is also used in `psketti()` to create
+#'     multiple ICC plots
 #'
-#' @usage \code{psketto(pskettified_data = df, item = "ItemName", item.label = "ItemLabel")}
-#'
-#' @param pskettified_data input data, generated using \code{pskettify()}
+#' @param pskettified_data input data, generated using `pskettify()`.
 #' @param item character name of the item to be plotted
-#' @param style a character string for plotting style options are present for coloured plots,
-#'     or print for black and white plots. Defaults to "present".
-#' @param item.label a character string of the item name prefix.
-#' @param IRFLocation logical, plots reference lines for Rasch IRF location. Defaults to TRUE.
-#' @param empCI logical, plots confidence intervals for empirical points, calculated using \code{pskettify()}.
-#'     Defaults to TRUE.
-#' @param empICC logical, plots empirical ICC for item. Defaults to \code{TRUE}.
-#' @param empPoints logical, plots empirical points for based on class intervals/score groups
-#'     generated with \code{pskettify()}. Defaults to \code{TRUE}
+#' @param style a character string for plotting style options are present for
+#'     coloured, or print for black and white. Defaults to "present".
+#' @param item.label a character string of the item name to use.
+#' @param IRFLocation logical, plots reference lines for Rasch IRF location.
+#'     Defaults to `TRUE`
+#' @param empCI logical, plots confidence intervals for empirical points,
+#'     calculated using `pskettify()`. Defaults to `TRUE`
+#' @param empICC logical, plots empirical ICC for item. Defaults to `TRUE`
+#' @param empPoints logical, plots empirical points for based on class
+#'     intervals/score groups generated with `pskettify()`. Defaults to `TRUE`
 #'
 #' @return psketto plot.
 #'
@@ -29,9 +29,9 @@
 #' @examples
 #' library(eRm)
 #' library(psketti)
-#' data(FakeData)  # load dataset fake data
+#' data("FakeData")  # load dataset fake data
 #'
-#' # Set up dataframe for eRm, long to wide with dichotmous data
+#' # Set up dataframe for eRm, long to wide with dichotomous data
 #' Fake_Data_scores <- reshape(FakeData[, c("ID", "Item", "X")],
 #'                             timevar = "Item",
 #'                             idvar = "ID",
@@ -40,20 +40,29 @@
 #' row.names(Fake_Data_scores) <- Fake_Data_scores$ID
 #' Fake_Data_scores$ID <- NULL
 #'
-#' fake_rm <- RM(Fake_Data_scores) # Fit Rasch Model
+#' fake_rm  <- RM(Fake_Data_scores) # Fit Rasch Model
 #'
-#' psk_data <-pskettify(eRm.obj = fake_rm)
+#' psk_data <- pskettify(eRm.obj = fake_rm)
 #'
 #' # plot IRF in default colours
-#' psk_1_present <- psketto(psk.data, style = "present", item = 1, item.label = "Item 1")
+#' psk_1_present <- psketto(psk_data,
+#'                          style = "present",
+#'                          item = "i01",
+#'                          item.label = "i01")
 #' psk_1_present
 #'
 #' # plot IRF in default greyscale colours
-#' psk_1_print   <- psketto(psk.data, style = "print", item = 1, item.label = "Item 1")
+#' psk_1_print <- psketto(psk_data,
+#'                        style = "print",
+#'                        item = "i01",
+#'                        item.label = "i01")
 #' psk_1_print
 
 psketto <- function(pskettified_data, item, item.label, style = "present",
                     IRFLocation = TRUE, empCI = TRUE, empICC = TRUE, empPoints = TRUE){
+  # set internal variables to NULL
+  Theta <- Probs <- Item <- Beta <- rel.freq <- lci <- uci <- NULL
+  
   # Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
   x <- pskettified_data
   # warning messages for function
