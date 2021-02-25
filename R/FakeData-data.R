@@ -19,9 +19,6 @@
 #' @source \href{https://www.rasch.org/rmt/rmt213a.htm}{Rasch Measurement Transactions}
 #'
 #' @examples
-#' # Show fake item parameters
-#' data(FakeItems)
-#'
 #' # Show fake data
 #' data(FakeData)
 #'
