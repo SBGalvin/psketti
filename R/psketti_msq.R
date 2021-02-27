@@ -11,11 +11,14 @@
 #'     
 #' @return MSQ plot.
 #'
-#' @importFrom ggplot2 ggplot aes geom_text geom_point geom_hline scale_colour_manual theme_minimal theme ylab xlab ggtitle element_blank
+#' @importFrom ggplot2 ggplot aes geom_text geom_point geom_hline scale_colour_manual theme_minimal theme ylab xlab scale_x_continuous
 #'
 #' @export
 
 psketti_msq <- function(x, style = "present"){
+  # initialize
+  Fit <-Item <-MSQ <-Xpos <- NULL
+  
   # Safety check
   if(!"ItemFit" %in% class(x)) 
     stop("Object is not of class ItemFit!!")
