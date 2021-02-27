@@ -1,6 +1,6 @@
 #' @title Distractor Analysis Plots
 #'
-#' @name spaghetti_plot_1
+#' @name psketti_distractor
 #'
 #' @description Implementation of a graphical (Asril and Marais, 2011) approach
 #'     to assigning a partial credit scoring system to data previously estimated
@@ -52,17 +52,17 @@
 #'               levels = sort(unique(FakeData$K)),
 #'               ordered = TRUE)
 #'
-#' spag_plot <- spaghetti_plot_1(ID = "ID",              # set ID column
-#'                               Item = "Item",          # set Item column
-#'                               K= "K",                 # Set resp categories 
-#'                               x = FakeData,           # select data
-#'                               eRm.obj = fake_rm,      # select eRm object
-#'                               response_options = r_o, # set response options
-#'                               p.style = "present")    # set plotting style
+#' spag_plot <- psketti_distractor(ID = "ID",              # set ID column
+#'                                 Item = "Item",          # set Item column
+#'                                 K= "K",                 # Set resp categories 
+#'                                 x = FakeData,           # select data
+#'                                 eRm.obj = fake_rm,      # select eRm object
+#'                                 response_options = r_o, # set resp options
+#'                                 p.style = "present")    # set plotting style
 
 
 
-spaghetti_plot_1 <- function(x, ID, Item, K, response_options,
+psketti_distractor <- function(x, ID, Item, K, response_options,
                              eRm.obj, p.style = "present", 
                              distractor_colours = NULL){
 
