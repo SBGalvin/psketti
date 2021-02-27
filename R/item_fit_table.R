@@ -1,3 +1,15 @@
+#' @title Create Item Fit Table
+#'
+#' @name item_fit_table
+#'
+#' @description This function extracts Item fit statistics from eRm `itemfit()`
+#'
+#' @param eRm.obj input data, generated using a Rasch model estimation function
+#'     from eRm.
+#'     
+#' @return A data.frame of class ItemFit.
+#'
+#' @export
 
 item_fit_table <- function(eRm.obj){
   
@@ -32,6 +44,8 @@ item_fit_table <- function(eRm.obj){
                             "Chisq", "df", "OutfitMSQ",
                             "InfitMSQ", "OutFitt", "InFitt", "Disc")]
   
+  # give this a class name
+  class(ifit.tbl) <- "ItemFit"
  
   return(ifit.tbl)
 }
