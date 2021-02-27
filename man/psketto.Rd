@@ -2,7 +2,7 @@
 % Please edit documentation in R/psketto.R
 \name{psketto}
 \alias{psketto}
-\title{Plot a single ICC}
+\title{Plot a Single ICC}
 \usage{
 psketto(
   pskettified_data,
