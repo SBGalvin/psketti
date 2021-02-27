@@ -1,6 +1,24 @@
-
+#' @title Plot a Infit and Outfit MSQ
+#'
+#' @name pskett_msq
+#'
+#' @description This function plots the Infit and Outfit MSQ values from a item
+#'     of class ItemFit. see `item_fit_table()`.
+#'
+#' @param x input data, generated using `item_fit_table()`.
+#' @param style a character string for plotting style options are present for
+#'     coloured, or print for black and white. Defaults to "present".
+#'     
+#' @return MSQ plot.
+#'
+#' @importFrom ggplot2 ggplot aes geom_text geom_point geom_hline scale_colour_manual theme_minimal theme ylab xlab ggtitle element_blank
+#'
+#' @export
 
 psketti_msq <- function(x, style = "present"){
+  # Safety check
+  if(!"ItemFit" %in% class(x)) 
+    stop("Object is not of class ItemFit!!")
   
   # wide to long
   x2 <- reshape(x[, c("Item", "InfitMSQ", "OutfitMSQ")], 
