@@ -8,6 +8,8 @@
 #'     from eRm.
 #'     
 #' @return A data.frame of class ItemFit.
+#' 
+#' @importFrom stats pchisq
 #'
 #' @export
 
