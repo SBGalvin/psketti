@@ -1,4 +1,4 @@
-#' @title Plot a single ICC
+#' @title Plot a Single ICC
 #'
 #' @name psketto
 #'
