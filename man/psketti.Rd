@@ -10,7 +10,8 @@ psketti(
   p.IRFLocation = TRUE,
   p.empCI = TRUE,
   p.empICC = TRUE,
-  p.empPoints = TRUE
+  p.empPoints = TRUE,
+  Force_no_facet = FALSE
 )
 }
 \arguments{
@@ -30,6 +31,9 @@ calculated using `pskettify()`. Defaults to `TRUE`.}
 
 \item{p.empPoints}{logical, plots empirical points for based on class
 intervals/ score groups generated with `pskettify()`. Defaults to `TRUE`.}
+
+\item{Force_no_facet}{a logical, forces psketti to not use facets for
+polytomous models. Defaults to `FALSE`.}
 }
 \value{
 A list object containing multiple psketto plots.

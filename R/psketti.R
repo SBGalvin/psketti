@@ -17,6 +17,8 @@
 #' @param p.empICC logical, plots empirical ICC for item. Defaults to `TRUE`.
 #' @param p.empPoints logical, plots empirical points for based on class
 #'     intervals/ score groups generated with `pskettify()`. Defaults to `TRUE`.
+#' @param Force_no_facet a logical, forces psketti to not use facets for
+#'     polytomous models. Defaults to `FALSE`.
 #'
 #' @return A list object containing multiple psketto plots.
 #'
@@ -50,45 +52,57 @@
 
 psketti <- function(pskettified_data, p.style = "present",
                     p.IRFLocation = TRUE, p.empCI = TRUE, p.empICC = TRUE,
-                    p.empPoints = TRUE){
-
-  x <- pskettified_data
+                    p.empPoints = TRUE, Force_no_facet = FALSE){
+  
+  p.facet_curve <- NULL
+  
+  # data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  x          <- pskettified_data
   Model_type <- class(x)[2]
-
-
-
+  
+  # Plot Facetting ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  if(Model_type == "PCM" & Force_no_facet == TRUE){
+    p.facet_curve = FALSE
+  }else if (Model_type == "PCM" & Force_no_facet == FALSE & any(p.empCI, p.empICC, p.empPoints)) {
+    p.facet_curve = TRUE
+  } else{
+    p.facet_curve = FALSE
+  }
+  
+  
   # include list of item names in input object
   j.list <- unique(x$presp$Item)
-
+  
   ICC_out <- list()
   j <- NULL
-
+  
   for (j in 1:length(j.list)) {
-
+    
     x_j <- j.list[j]
     # create psketto function for gg_single_ICC2
     ICC_plot <- psketto(x, item = x_j, item.label = x_j,
-                        style = p.style,
-                        IRFLocation = p.IRFLocation, empCI = p.empCI,
-                        empICC = p.empICC, empPoints = p.empPoints)
-
+                          style = p.style,
+                          IRFLocation = p.IRFLocation, empCI = p.empCI,
+                          empICC = p.empICC, empPoints = p.empPoints,
+                          facet_curves = p.facet_curve)
+    
     # append the plot (resid.plot) to the plot list with the item name
     ICC_out[[j]] <-  list(ICC_plot)
   }
-
+  
   ICC_out <- setNames(ICC_out, j.list)
-
+  
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
   # Return object ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
   output_list <- list()
   output_list[[1]] <- paste0("Empirical and Theoretical Rasch IRF")
   output_list[[2]] <- Model_type
   output_list[[3]] <- ICC_out
-
+  
   names(output_list) <- c("xlbl", "Model.Type", "Plot.List")
   class(output_list) <- "psketti"
-
-
+  
+  
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
   # Return ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
   return(invisible(output_list)) # invisible prevents plots from printing

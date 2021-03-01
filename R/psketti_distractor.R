@@ -14,7 +14,8 @@
 #' @param response_options An ordered factor object to arrange column order in
 #'     the distractor table.
 #' @param eRm.obj An object of class eRm and model RM. Use `eRm::RM(score_data)`
-#'     to create this object.
+#'     to create this object. To plot empirical values for PCM see `pskettify`, 
+#'     `psketti` and `psketto`.
 #' @param p.style Plot output style, "print" for black and white, or "present"
 #'     for color. Defaults to "present".
 #' @param distractor_colours An optional vector of colours for distractor plot
@@ -79,9 +80,9 @@ psketti_distractor <- function(x, ID, Item, K, response_options,
     # Data subset by item
     tmp1 <- z$emp_ICC[z$emp_ICC$Item == item,]
     tmp2 <- z$presp[z$presp$Item == item,]
-
+    tmp3 <- z$ItemDF[z$ItemDF$Item == item,]
     # Item Difficulty/ Location
-    Beta_tmp <- round(unique(tmp2$Beta),2)
+    Beta_tmp <- round(unique(tmp3$Beta),2)
 
     # Plot ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     plt <- ggplot(data = tmp2, aes(x = Theta, y = Probs, group = Item))+
@@ -156,7 +157,7 @@ psketti_distractor <- function(x, ID, Item, K, response_options,
 
     for (j in 1:length(j.list)) {
       x_j <- j.list[j]
-      Beta_tmp <- round(unique(psk_d$presp[psk_d$presp$Item == j.list[j], ]$Beta),2)
+      Beta_tmp <- round(unique(psk_d$ItemDF[psk_d$ItemDF$Item == j.list[j], ]$Beta),2)
 
       d_icc_plt <-  psketto_simple(pskettified_data = psk_d,
                                    item = j.list[j])+

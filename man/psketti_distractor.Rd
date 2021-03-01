@@ -28,7 +28,8 @@ psketti_distractor(
 the distractor table.}
 
 \item{eRm.obj}{An object of class eRm and model RM. Use `eRm::RM(score_data)`
-to create this object.}
+to create this object. To plot empirical values for PCM see `pskettify`, 
+`psketti` and `psketto`.}
 
 \item{p.style}{Plot output style, "print" for black and white, or "present"
 for color. Defaults to "present".}

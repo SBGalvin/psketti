@@ -12,7 +12,8 @@ psketto(
   IRFLocation = TRUE,
   empCI = TRUE,
   empICC = TRUE,
-  empPoints = TRUE
+  empPoints = TRUE,
+  facet_curves = FALSE
 )
 }
 \arguments{
@@ -35,6 +36,9 @@ calculated using `pskettify()`. Defaults to `TRUE`}
 
 \item{empPoints}{logical, plots empirical points for based on class
 intervals/score groups generated with `pskettify()`. Defaults to `TRUE`}
+
+\item{facet_curves}{logical, should the plot be faceted by category curve?
+Applies only to polytomous Rasch models. Defaults to `FALSE`,.}
 }
 \value{
 psketto plot.

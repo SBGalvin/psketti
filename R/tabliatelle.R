@@ -57,10 +57,28 @@ tabliatelle <- function(x, ID, Item, K, response_options, eRm.obj){
 
 
   # Checks
-  # warning messages for function
-  if(!"eRm" %in% class(eRm.obj)) stop("Object is not of class eRm: Please ensure your input object is an eRm object with model RM.")
+  # stop messages for function
+  if(!"eRm" %in% class(eRm.obj)){
+    stop("Object eRm.obj is not of class eRm:
+         Please ensure your input object is an eRm object with model RM.")
+  } 
 
-  if(!eRm.obj$model == "RM") stop("Model not of type RM. Please ensure eRm object is a fitted Dichotmous Rasch Model; use eRm::RM().")
+  if(!eRm.obj$model %in% c("RM", "PCM")) {
+    stop(paste0("Model not of type RM or PCM.",
+                "\n",
+                "Please ensure eRm object is either a",
+                "\n",
+                "\t",
+                "estimated Dichotmous Rasch Model",
+                "\n", "\t", "\t",
+                "using eRm::RM()",
+                "\n", "\t", "\t", "or", "\n",
+                "\t",
+                "estimated Partial Credit Rasch Model",
+                "\n", "\t", "\t",
+                "using eRm::PCM()"))
+  }
+     
 
 
   # Stage 1 Extract person abilities -----------------------------------------
