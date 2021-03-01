@@ -41,13 +41,13 @@ psketti_msq <- function(x, style = "present"){
   
   if(style == "present") {
     plt <- plt + 
-      geom_hline(yintercept = 1.2, colour = "tomato", lty = "dotted")+
-      geom_hline(yintercept = 0.8, colour = "tomato", lty = "dotted")
+      geom_hline(yintercept = 1.2, colour = "tomato4", lty = "dashed")+
+      geom_hline(yintercept = 0.8, colour = "tomato4", lty = "dashed")
     
   } else if(style == "print"){
     plt <- plt + 
-      geom_hline(yintercept = 1.2, colour = "grey50", lty = "dotted")+
-      geom_hline(yintercept = 0.8, colour = "grey50", lty = "dotted")
+      geom_hline(yintercept = 1.2, colour = "grey50", lty = "dashed")+
+      geom_hline(yintercept = 0.8, colour = "grey50", lty = "dashed")
     
   }
   
