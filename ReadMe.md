@@ -1,32 +1,58 @@
-ReadMe
-================
 
-![](img/psketti_hex2.png)
+# psketti <img src ="img/psketti_hex2.png" align ="right" width="120"/>
 
-## psketti
+## Overview
 
-Generating Investigatory Plots and Tables for Rasch Analysis
+psketti is a package for generating investigatory plots and tables for
+Rasch Analysis. Models should first be estimated using eRm, psketti then
+pskettifies your Rasch data and produces outputs using ggplot2.
 
-## Investigate Item Response Functions
+## Installation
 
-### (0) Load required packages
+``` r
+devtools::install_github("SBGalvin/psketti")
+```
+
+## Investigate Item Response Functions - Dichotomous Rasch Model
+
+### (0) Prepare data
 
 ``` r
 library(eRm)
-library(ggplot2)
 library(psketti)
-data(FakeData)  # load dataset fake data
+```
 
-# Set up dataframe for eRm, long to wide with dichotmous data
+    ## [0;33m--------------------------------------------------------------------------------[0m
+    ## [0;33mLoading psketti v 0.1.0[0m
+    ## [0;41mBeta Software !!!![0m
+
+    ## [0;33mDependencies:[0m
+    ##  eRm      (1.0.2) already loaded
+    ##  dplyr        (1.0.4) loaded by [0;33mpsketti[0m
+    ##  ggplot2      (3.3.3) loaded by [0;33mpsketti[0m
+    ##  viridis      (0.5.1) loaded by [0;33mpsketti[0m
+
+    ## 
+    ## please install any NOT INSTALLED dependencies using:
+    ## install.packages('dependency')
+    ## [0;33m--------------------------------------------------------------------------------[0m
+
+``` r
+data("FakeData") # load data
+# restructure fake data
 Fake_Data_scores <- reshape(FakeData[, c("ID", "Item", "X")],
-                            timevar = "Item",
-                            idvar = "ID",
-                            direction = "wide")
-names(Fake_Data_scores) <- c("ID", paste0("i", sprintf(fmt  = "%02d", 1:23)))
+                           timevar = "Item",
+                           idvar = "ID",
+                           direction = "wide")
+# for eRm new names
+names(Fake_Data_scores) <- c("ID",
+                             paste0("i",
+                                    sprintf(fmt  = "%02d", 1:23)))
+
 row.names(Fake_Data_scores) <- Fake_Data_scores$ID
 Fake_Data_scores$ID <- NULL
 
-fake_rm <- RM(Fake_Data_scores) # Fit Rasch Model
+fake_rm   <- RM(Fake_Data_scores) # Estimate Rasch model
 ```
 
 ### (1) pskettify your data
@@ -47,56 +73,402 @@ averages with confidence intervals
 
 ``` r
 # plot ICC for one item
-psk_6_present <- psketto(psk_data, item = "i01", style = "present", item.label = "i01")   # colour
-psk_6_present
+psk_1_present <- psketto(psk_data,
+                         style = "present",
+                         item = "i01",
+                         item.label = "i01")
+psk_1_present
 ```
 
-![](img/Fake_Data_IRF_01_Single_colour.png)
+![](ReadMe_files/figure-gfm/IRFcolour-1.png)<!-- -->
 
 ``` r
-psk_6_print   <- psketto(psk_data, item = "i06", style = "print", item.label = "i06")     # black and white
-psk_6_print
+psk_1_print <- psketto(psk_data,
+                       style = "print",
+                       item = "i01",
+                       item.label = "i01")
+psk_1_print
 ```
 
-![](img/Fake_Data_IRF_01_Single_BW.png) …or use psketti() to plot ICC
-for all plots
+![](ReadMe_files/figure-gfm/IRFBW-1.png)<!-- -->
+
+…or use psketti() to plot ICC for all plots. `psketti()` objects printed
+to the console will print suggestions for how to call a plot.
 
 ``` r
 # plot ICC for one item
 psk_IRF <- psketti(psk_data)
-psk_IRF[["i06"]]
-psk_IRF[["i12"]]
+psk_IRF
 ```
 
-|            Call 1             |            Call 2             |
-|:-----------------------------:|:-----------------------------:|
-| ![](img/Fake_Data_IRF_06.png) | ![](img/Fake_Data_IRF_12.png) |
+    ## Empirical and Theoretical Rasch IRF 
+    ## 
+    ##  Model:  
+    ##  N items:  23 
+    ## 
+    ## 
+    ##  How To call item plots: 
+    ## 
+    ##    Item                               Call
+    ## 1   i01 objectName$Plot.List[['i01']][[1]]
+    ## 2   i02 objectName$Plot.List[['i02']][[1]]
+    ## 3   i03 objectName$Plot.List[['i03']][[1]]
+    ## 4   i04 objectName$Plot.List[['i04']][[1]]
+    ## 5   i05 objectName$Plot.List[['i05']][[1]]
+    ## 6   i06 objectName$Plot.List[['i06']][[1]]
+    ## 7   i07 objectName$Plot.List[['i07']][[1]]
+    ## 8   i08 objectName$Plot.List[['i08']][[1]]
+    ## 9   i09 objectName$Plot.List[['i09']][[1]]
+    ## 10  i10 objectName$Plot.List[['i10']][[1]]
+    ## 11  i11 objectName$Plot.List[['i11']][[1]]
+    ## 12  i12 objectName$Plot.List[['i12']][[1]]
+    ## 13  i13 objectName$Plot.List[['i13']][[1]]
+    ## 14  i14 objectName$Plot.List[['i14']][[1]]
+    ## 15  i15 objectName$Plot.List[['i15']][[1]]
+    ## 16  i16 objectName$Plot.List[['i16']][[1]]
+    ## 17  i17 objectName$Plot.List[['i17']][[1]]
+    ## 18  i18 objectName$Plot.List[['i18']][[1]]
+    ## 19  i19 objectName$Plot.List[['i19']][[1]]
+    ## 20  i20 objectName$Plot.List[['i20']][[1]]
+    ## 21  i21 objectName$Plot.List[['i21']][[1]]
+    ## 22  i22 objectName$Plot.List[['i22']][[1]]
+    ## 23  i23 objectName$Plot.List[['i23']][[1]]
 
-## Investigate distractor options
+``` r
+psk_IRF[["i06"]][[1]]
+```
 
-### (1) tabliatellify your data
+    ## NULL
+
+``` r
+psk_IRF[["i12"]][[1]]
+```
+
+    ## NULL
+
+### (3) Item Fit statistics
+
+Produce a table of item fit statistics as per eRm
+
+``` r
+itemFit_psk <- item_fit_table(fake_rm)
+itemFit_psk
+```
+
+    ##    Item        Beta         Se    Chisq   df OutfitMSQ  InfitMSQ     OutFitt
+    ## 1   i01  0.07473218 0.06437389 1254.234 1185 1.0575332 1.0314362  1.19980064
+    ## 2   i02 -1.28189942 0.07104544 1050.835 1185 0.8860328 0.9735653 -1.51127705
+    ## 3   i03 -0.50056783 0.06517996 1201.992 1185 1.0134838 0.9762960  0.27300353
+    ## 4   i04 -0.17887946 0.06438207 1162.839 1185 0.9804718 0.9909980 -0.39173330
+    ## 5   i05 -1.80461161 0.07857370 1193.748 1185 1.0065328 0.9570137  0.09763663
+    ## 6   i06  1.11917293 0.07019746 1069.697 1185 0.9019371 0.9567124 -1.40778719
+    ## 7   i07 -0.47414717 0.06508070 1088.756 1185 0.9180065 0.9438708 -1.60341419
+    ## 8   i08  0.03601503 0.06433992 1254.052 1185 1.0573791 1.0287805  1.19900120
+    ## 9   i09  0.38755035 0.06511148 1137.963 1185 0.9594964 0.9737929 -0.79337292
+    ## 10  i10 -0.10577279 0.06432395 1126.507 1185 0.9498373 0.9811678 -1.05193650
+    ## 11  i11 -0.25648292 0.06449334 1200.836 1185 1.0125095 1.0174621  0.27113986
+    ## 12  i12 -1.23514813 0.07052421 1135.532 1185 0.9574466 0.9735758 -0.54897236
+    ## 13  i13  2.31741601 0.09096409 1013.785 1185 0.8547933 0.9167887 -1.07485891
+    ## 14  i14  1.51720873 0.07515240 1055.316 1185 0.8898107 0.9443657 -1.26884835
+    ## 15  i15  0.61556507 0.06617789 1109.526 1185 0.9355190 1.0007062 -1.17645383
+    ## 16  i16 -0.94803181 0.06781848 1206.063 1185 1.0169164 0.9720462  0.28234152
+    ## 17  i17  0.38314744 0.06509527 1138.398 1185 0.9598630 0.9769377 -0.78704627
+    ## 18  i18  0.55221093 0.06583602 1243.398 1185 1.0483964 0.9912305  0.90431354
+    ## 19  i19 -0.06281072 0.06431096 1239.067 1185 1.0447444 1.0396249  0.94144685
+    ## 20  i20  0.44943279 0.06535617 1190.096 1185 1.0034537 1.0092329  0.08394471
+    ## 21  i21  0.74909897 0.06701529 1257.987 1185 1.0606975 0.9967212  1.03495427
+    ## 22  i22 -0.83497156 0.06697671 1094.392 1185 0.9227586 0.9702075 -1.28229933
+    ## 23  i23 -0.51822698 0.06524967 1180.640 1185 0.9954810 1.0257112 -0.06794180
+    ##         InFitt      Disc
+    ## 1   1.13516300 0.4283385
+    ## 2  -0.73316965 0.4281259
+    ## 3  -0.82772937 0.4666679
+    ## 4  -0.31832108 0.4620585
+    ## 5  -0.96227117 0.3686364
+    ## 6  -1.23478089 0.4493425
+    ## 7  -2.00403676 0.4946250
+    ## 8   1.04303508 0.4303681
+    ## 9  -0.91164678 0.4737977
+    ## 10 -0.67966534 0.4718941
+    ## 11  0.63609986 0.4372542
+    ## 12 -0.74646112 0.4206367
+    ## 13 -1.45542877 0.3437275
+    ## 14 -1.36724109 0.4277880
+    ## 15  0.03346979 0.4505710
+    ## 16 -0.87563282 0.4389657
+    ## 17 -0.80087956 0.4723819
+    ## 18 -0.28633011 0.4516323
+    ## 19  1.43105423 0.4212587
+    ## 20  0.32665447 0.4378982
+    ## 21 -0.09462334 0.4388586
+    ## 22 -0.96707020 0.4487284
+    ## 23  0.90012995 0.4233138
+
+Produce Plot of infit and outfit statistics
+
+``` r
+psketti_msq(x = itemFit_psk)
+```
+
+![](ReadMe_files/figure-gfm/MSQ1-1.png)<!-- -->
+
+### (4) Investigate distractor options
 
 ``` r
 # response option categories
 r_o <- factor(sort(unique(FakeData$K)), levels = sort(unique(FakeData$K)), ordered = TRUE)
 tlt_data <- tabliatelle(x = FakeData, ID = "ID", Item = "Item", K = "K", 
                         response_options = r_o, eRm.obj = fake_rm)
+tlt_data
 ```
 
-### (2) Plot the distractor empirical ICC against the dichotomous Rasch ICC
+    ## Class Interval Proportion Table 
+    ## N Class Intervals: 3 
+    ## Class size (n):  1:3: c(178, 844, 178) 
+    ## 
+    ## Response Options:  Key: A Distractor: B Distractor: C Distractor: D Distractor: E 
+    ## 
+    ## Data:
+    ##    Item  Beta Class Interval Theta    A    B    C    D    E
+    ## 1   i01  0.07              1 -2.16 0.13 0.24 0.22 0.17 0.22
+    ## 2                          2 -0.04 0.47 0.14 0.12 0.13 0.14
+    ## 3                          3  2.16 0.85 0.04 0.04 0.03 0.04
+    ## 4   i02 -1.28              1 -2.16 0.31 0.20 0.13 0.19 0.17
+    ## 5                          3  2.16 0.98 0.01 0.01 0.00 0.00
+    ## 6                          2 -0.04 0.76 0.07 0.06 0.05 0.06
+    ## 7   i03  -0.5              3  2.16 0.92 0.03 0.02 0.02 0.02
+    ## 8                          1 -2.16 0.16 0.23 0.21 0.23 0.17
+    ## 9                          2 -0.04 0.61 0.10 0.09 0.10 0.10
+    ## 10  i04 -0.18              2 -0.04 0.53 0.12 0.13 0.09 0.13
+    ## 11                         1 -2.16 0.15 0.22 0.20 0.23 0.20
+    ## 12                         3  2.16 0.91 0.03 0.02 0.02 0.02
+    ## 13  i05  -1.8              2 -0.04 0.85 0.03 0.03 0.04 0.05
+    ## 14                         1 -2.16 0.42 0.11 0.13 0.17 0.17
+    ## 15                         3  2.16 0.98 0.01 0.01 0.01 0.01
+    ## 16  i06  1.12              1 -2.16 0.03 0.28 0.27 0.21 0.21
+    ## 17                         3  2.16 0.76 0.06 0.07 0.06 0.05
+    ## 18                         2 -0.04 0.24 0.18 0.18 0.20 0.19
+    ## 19  i07 -0.47              1 -2.16 0.14 0.22 0.19 0.27 0.17
+    ## 20                         3  2.16 0.95 0.01 0.02 0.01 0.02
+    ## 21                         2 -0.04 0.60 0.10 0.09 0.09 0.11
+    ## 22  i08  0.04              2 -0.04 0.50 0.13 0.13 0.12 0.13
+    ## 23                         3  2.16 0.83 0.01 0.05 0.03 0.07
+    ## 24                         1 -2.16 0.09 0.24 0.22 0.21 0.24
+    ## 25  i09  0.39              2 -0.04 0.39 0.16 0.15 0.15 0.15
+    ## 26                         1 -2.16 0.10 0.26 0.20 0.24 0.19
+    ## 27                         3  2.16 0.86 0.03 0.04 0.02 0.04
+    ## 28  i10 -0.11              1 -2.16 0.11 0.24 0.24 0.22 0.19
+    ## 29                         2 -0.04 0.52 0.12 0.12 0.12 0.13
+    ## 30                         3  2.16 0.90 0.03 0.02 0.01 0.04
+    ## 31  i11 -0.26              3  2.16 0.89 0.03 0.03 0.02 0.02
+    ## 32                         1 -2.16 0.20 0.22 0.17 0.17 0.24
+    ## 33                         2 -0.04 0.54 0.10 0.11 0.14 0.10
+    ## 34  i12 -1.24              3  2.16 0.96 0.02 0.01 0.01 0.00
+    ## 35                         2 -0.04 0.75 0.06 0.07 0.06 0.07
+    ## 36                         1 -2.16 0.34 0.15 0.15 0.17 0.19
+    ## 37  i13  2.32              2 -0.04 0.09 0.23 0.21 0.23 0.23
+    ## 38                         3  2.16 0.46 0.12 0.16 0.19 0.07
+    ## 39                         1 -2.16 0.01 0.28 0.24 0.24 0.24
+    ## 40  i14  1.52              1 -2.16 0.02 0.25 0.24 0.26 0.24
+    ## 41                         2 -0.04 0.18 0.20 0.22 0.19 0.21
+    ## 42                         3  2.16 0.66 0.04 0.12 0.10 0.09
+    ## 43  i15  0.62              1 -2.16 0.01 0.24 0.26 0.25 0.24
+    ## 44                         3  2.16 0.78 0.07 0.05 0.06 0.04
+    ## 45                         2 -0.04 0.37 0.15 0.16 0.17 0.15
+    ## 46  i16 -0.95              3  2.16 0.93 0.01 0.03 0.02 0.01
+    ## 47                         1 -2.16 0.22 0.20 0.16 0.22 0.20
+    ## 48                         2 -0.04 0.71 0.08 0.09 0.07 0.06
+    ## 49  i17  0.38              2 -0.04 0.41 0.15 0.13 0.16 0.15
+    ## 50                         1 -2.16 0.06 0.22 0.28 0.24 0.20
+    ## 51                         3  2.16 0.85 0.03 0.04 0.03 0.06
+    ## 52  i18  0.55              2 -0.04 0.36 0.16 0.17 0.14 0.17
+    ## 53                         1 -2.16 0.08 0.25 0.24 0.23 0.20
+    ## 54                         3  2.16 0.83 0.06 0.03 0.04 0.03
+    ## 55  i19 -0.06              1 -2.16 0.17 0.19 0.23 0.18 0.22
+    ## 56                         3  2.16 0.88 0.04 0.02 0.01 0.04
+    ## 57                         2 -0.04 0.50 0.10 0.15 0.11 0.14
+    ## 58  i20  0.45              1 -2.16 0.12 0.25 0.21 0.26 0.16
+    ## 59                         3  2.16 0.83 0.05 0.04 0.04 0.03
+    ## 60                         2 -0.04 0.38 0.15 0.14 0.17 0.17
+    ## 61  i21  0.75              2 -0.04 0.33 0.18 0.16 0.16 0.17
+    ## 62                         3  2.16 0.76 0.06 0.06 0.06 0.06
+    ## 63                         1 -2.16 0.06 0.26 0.20 0.25 0.23
+    ## 64  i22 -0.83              2 -0.04 0.68 0.08 0.08 0.07 0.09
+    ## 65                         1 -2.16 0.21 0.19 0.20 0.20 0.20
+    ## 66                         3  2.16 0.96 0.01 0.03 0.00 0.01
+    ## 67  i23 -0.52              1 -2.16 0.20 0.19 0.21 0.16 0.23
+    ## 68                         2 -0.04 0.61 0.10 0.08 0.11 0.10
+    ## 69                         3  2.16 0.92 0.02 0.01 0.02 0.03
+
+### (5) Plot the distractor empirical ICC against the dichotomous Rasch ICC
 
 ``` r
-spag_plot <- spaghetti_plot(ID = "ID", Item = "Item", K= "K", x = FakeData, eRm.obj = fake_rm, 
-                            response_options = r_o, p.style = "present")
-spag_plot[["i06"]][[1]]
+# multiple plots
+spag_plot <- psketti_distractor(ID = "ID",              # set ID column
+                                Item = "Item",          # set Item column
+                                K= "K",                 # Set resp categories 
+                                x = FakeData,           # select data
+                                eRm.obj = fake_rm,      # select eRm object
+                                response_options = r_o, # set resp options
+                                p.style = "present")    # set plotting style
+ 
+
+spag_plot$Plot.List[['i01']][[1]] # plot item 1
 ```
 
-![](img/Fake_Data_Col_D_ICC_06.png)
+![](ReadMe_files/figure-gfm/Spagcol-1.png)<!-- -->
+
+### (6) Plot a score report
 
 ``` r
-spag_plot <- spaghetti_plot(ID = "ID", Item = "Item", K= "K", x = FakeData, eRm.obj = fake_rm, 
-                            response_options = r_o, p.style = "print")
-spag_plot[["i12"]][[1]]
+K_opt <- factor(LETTERS[1:5], levels = LETTERS[1:5], ordered = TRUE)
+score_report <- ingrediente(x = FakeData,
+                            Item = "Item",
+                            ID = "ID",
+                            Score = "X",
+                            K = "K",
+                            K_options = K_opt,
+                            Index = "Index")
+
+# show score report for values with a total score <= 5
+score_report[score_report$total_score <= 1, ]
 ```
 
-![](img/Fake_Data_BW_D_ICC_12.png)
+    ##             ID total_score String_type                 Pattern
+    ## 249  FAKE_0125           1   Responses EECDCCBEEADDDCEDBCEDBCB
+    ## 250  FAKE_0125           1       Score 00000000010000000000000
+    ## 299  FAKE_0150           0   Responses BECDBEDDDDDCCEDBEBCCCED
+    ## 300  FAKE_0150           0       Score 00000000000000000000000
+    ## 355  FAKE_0178           1   Responses BCCDBEBCBABCCEECECECEDD
+    ## 356  FAKE_0178           1       Score 00000000010000000000000
+    ## 457  FAKE_0229           0   Responses DDEBEDCEDCEDBBEDEEBDEBE
+    ## 458  FAKE_0229           0       Score 00000000000000000000000
+    ## 571  FAKE_0286           1   Responses ECCDBBEDEABDCECDDEDDCDB
+    ## 572  FAKE_0286           1       Score 00000000010000000000000
+    ## 575  FAKE_0288           1   Responses EBCEDDEDCBACCEBDBBBEBBC
+    ## 576  FAKE_0288           1       Score 00000000001000000000000
+    ## 631  FAKE_0316           0   Responses CDDDECDDEBEBBBCCCBDDDEC
+    ## 632  FAKE_0316           0       Score 00000000000000000000000
+    ## 645  FAKE_0323           0   Responses EEBCECDBEBDCDCDEEDEDECB
+    ## 646  FAKE_0323           0       Score 00000000000000000000000
+    ## 687  FAKE_0344           1   Responses BCCDBBCECCBBCBBCECCEDDA
+    ## 688  FAKE_0344           1       Score 00000000000000000000001
+    ## 721  FAKE_0361           1   Responses ACEEBEDBBDDEDECBBDCBDDD
+    ## 722  FAKE_0361           1       Score 10000000000000000000000
+    ## 745  FAKE_0373           0   Responses EDDCCBCCCBDCDEBDDECDDCE
+    ## 746  FAKE_0373           0       Score 00000000000000000000000
+    ## 903  FAKE_0452           1   Responses DEEEDCCBBEEEEBCDEEBACDB
+    ## 904  FAKE_0452           1       Score 00000000000000000001000
+    ## 1033 FAKE_0517           1   Responses EACBBBCCEBBCCCDDCDEEBBC
+    ## 1034 FAKE_0517           1       Score 01000000000000000000000
+    ## 1075 FAKE_0538           1   Responses BADDBCBBBEDCEECDECBECBE
+    ## 1076 FAKE_0538           1       Score 01000000000000000000000
+    ## 1205 FAKE_0603           0   Responses DBDDBDDEDDCECDCCCCDDDDB
+    ## 1206 FAKE_0603           0       Score 00000000000000000000000
+    ## 1281 FAKE_0641           1   Responses EBDCDBCECACDBEDDEDBDDBD
+    ## 1282 FAKE_0641           1       Score 00000000010000000000000
+    ## 1427 FAKE_0714           0   Responses DECDEBECCCBBECBBCBBEBCB
+    ## 1428 FAKE_0714           0       Score 00000000000000000000000
+    ## 1693 FAKE_0847           1   Responses EEEAEECBEDBCBCCCBDBDEEC
+    ## 1694 FAKE_0847           1       Score 00010000000000000000000
+    ## 1963 FAKE_0982           0   Responses BBEBBDEEBEBDCCBCBECEDBE
+    ## 1964 FAKE_0982           0       Score 00000000000000000000000
+    ## 2033 FAKE_1017           1   Responses CDEBCEBEAEDBBEDCCEBEBDB
+    ## 2034 FAKE_1017           1       Score 00000000100000000000000
+    ## 2181 FAKE_1091           1   Responses CDDEEBBCECADEDDDDECBDEB
+    ## 2182 FAKE_1091           1       Score 00000000001000000000000
+    ## 2311 FAKE_1156           1   Responses DEECECBEBDDDDCEACDDBDCC
+    ## 2312 FAKE_1156           1       Score 00000000000000010000000
+
+## Rasch Partial Credit Model
+
+``` r
+data("FakePCMData")
+
+F2           <- FakePCMData
+rownames(F2) <- F2$ID
+F2$ID        <- NULL
+
+fake_pcm <- PCM(F2)
+```
+
+``` r
+psk_pcm <- pskettify(eRm.obj = fake_pcm) # pskettify
+psk_pcm 
+```
+
+    ## Model:  PCM 
+    ##    Item  K    tau    Se   Beta
+    ## 1   i01 c1 -0.809 0.114 -0.882
+    ## 2   i01 c2 -1.023 0.115 -0.882
+    ## 3   i01 c3 -0.812 0.118 -0.882
+    ## 4   i02 c1 -1.591 0.164 -2.212
+    ## 5   i02 c2 -2.463 0.156 -2.212
+    ## 6   i02 c3 -2.583 0.152 -2.212
+    ## 7   i03 c1 -0.404 0.094  0.017
+    ## 8   i03 c2 -0.156 0.101  0.017
+    ## 9   i03 c3  0.611 0.113  0.017
+    ## 10  i04 c1  0.354 0.077  1.589
+    ## 11  i04 c2  1.416 0.097  1.589
+    ## 12  i04 c3  2.999 0.124  1.589
+    ## 13  i05 c1 -0.827 0.102 -0.450
+    ## 14  i05 c2 -0.772 0.106 -0.450
+    ## 15  i05 c3  0.249 0.118 -0.450
+    ## 16  i06 c1 -2.060 0.202 -2.863
+    ## 17  i06 c2 -2.979 0.193 -2.863
+    ## 18  i06 c3 -3.550 0.184 -2.863
+    ## 19  i07 c1 -0.614 0.093 -0.012
+    ## 20  i07 c2 -0.181 0.102 -0.012
+    ## 21  i07 c3  0.758 0.115 -0.012
+    ## 22  i08 c1  0.869 0.072  2.904
+    ## 23  i08 c2  2.698 0.107  2.904
+    ## 24  i08 c3  5.144 0.163  2.904
+    ## 25  i09 c1 -1.026 0.125 -1.270
+    ## 26  i09 c2 -1.402 0.124 -1.270
+    ## 27  i09 c3 -1.383 0.125 -1.270
+    ## 28  i10 c1  1.137 0.074  3.179
+    ## 29  i10 c2  2.772 0.104  3.179
+    ## 30  i10 c3  5.630 0.177  3.179
+
+``` r
+psk_no_facet <- psketto(pskettified_data = psk_pcm, item = "i01", item.label = "i01")
+psk_no_facet
+```
+
+![](ReadMe_files/figure-gfm/PCMplot1-1.png)<!-- -->
+
+``` r
+psk_facet <- psketto(pskettified_data = psk_pcm, item = "i01", item.label = "i01", facet_curves = TRUE)
+psk_facet
+```
+
+![](ReadMe_files/figure-gfm/PCMplot2-1.png)<!-- -->
+
+By default `psketti()` produces faceted plots for partial credit models
+
+``` r
+print_facet <- psketti(pskettified_data = psk_pcm)
+print_facet$Plot.List[['i01']][[1]] # output
+```
+
+![](ReadMe_files/figure-gfm/PCMplot3-1.png)<!-- -->
+
+However, you can turn off this behaviour by using the
+`Force_no_facet=True` argument.
+
+``` r
+print_no_facet <- psketti(pskettified_data = psk_pcm, p.empICC = FALSE, Force_no_facet = TRUE)
+print_no_facet$Plot.List[['i02']][[1]]
+```
+
+![](ReadMe_files/figure-gfm/PCMplot4-1.png)<!-- -->
+
+``` r
+fake_ifit <- item_fit_table(eRm.obj = fake_pcm)
+```
+
+``` r
+psketti_msq(x = fake_ifit)
+```
+
+![](ReadMe_files/figure-gfm/PCMMSQ-1.png)<!-- -->
