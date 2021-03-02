@@ -52,32 +52,36 @@ psketto is singlular of psketti; (spaghetti <--> spaghetto).
 \examples{
 library(eRm)
 library(psketti)
-data("FakeData")  # load dataset fake data
 
-# Set up dataframe for eRm, long to wide with dichotomous data
+data("FakeData") # load data
+# restructure fake data
 Fake_Data_scores <- reshape(FakeData[, c("ID", "Item", "X")],
                             timevar = "Item",
                             idvar = "ID",
                             direction = "wide")
-names(Fake_Data_scores) <- c("ID", paste0("i", sprintf(fmt  = "\%02d", 1:23)))
+# for eRm col names and row names
+names(Fake_Data_scores) <- c("ID",
+                             paste0("i",
+                                    sprintf(fmt  = "\%02d", 1:23)))
+                                    
 row.names(Fake_Data_scores) <- Fake_Data_scores$ID
-Fake_Data_scores$ID <- NULL
+Fake_Data_scores$ID         <- NULL
 
-fake_rm  <- RM(Fake_Data_scores) # Fit Rasch Model
+fake_rm   <- RM(Fake_Data_scores) # Estimate Rasch model
 
-psk_data <- pskettify(eRm.obj = fake_rm)
+psk_data  <- pskettify(fake_rm)   # pskettify data
 
 # plot IRF in default colours
 psk_1_present <- psketto(psk_data,
                          style = "present",
                          item = "i01",
                          item.label = "i01")
-psk_1_present
+psk_1_present # plot output
 
 # plot IRF in default greyscale colours
 psk_1_print <- psketto(psk_data,
                        style = "print",
                        item = "i01",
                        item.label = "i01")
-psk_1_print
+psk_1_print # plot output
 }

@@ -46,23 +46,29 @@ This function extracts data from an eRm object of class 'RM' and
 \examples{
 library(eRm)
 library(psketti)
-data("FakeData")  # load dataset fake data
 
-# Set up dataframe for eRm, long to wide with dichotmous data
+data("FakeData") # load data
+# restructure fake data
 Fake_Data_scores <- reshape(FakeData[, c("ID", "Item", "X")],
                             timevar = "Item",
                             idvar = "ID",
                             direction = "wide")
-names(Fake_Data_scores) <- c("ID", paste0("i", sprintf(fmt  = "\%02d", 1:23)))
+# for eRm col names and row names
+names(Fake_Data_scores) <- c("ID",
+                             paste0("i",
+                                    sprintf(fmt  = "\%02d", 1:23)))
+                                    
 row.names(Fake_Data_scores) <- Fake_Data_scores$ID
-Fake_Data_scores$ID <- NULL
+Fake_Data_scores$ID         <- NULL
 
-fake_rm  <- RM(Fake_Data_scores) # Fit Rasch Model
+fake_rm   <- RM(Fake_Data_scores) # Estimate Rasch model
 
-psk_data <- pskettify(eRm.obj = fake_rm)
+psk_data  <- pskettify(fake_rm)   # pskettify data
 
-# plot ICC for all item
-psk_IRF <- psketti(psk_data)
-psk_IRF[["i06"]]
-psk_IRF[["i12"]]
+# multiple plots
+multi_plot <- psketti(pskettified_data = psk_data)
+multi_plot # plot call instructions
+
+# print first item plot
+multi_plot$Plot.List[['i01']][[1]]
 }

@@ -20,3 +20,28 @@ MSQ plot.
 This function plots the Infit and Outfit MSQ values from a item
     of class ItemFit. see `item_fit_table()`.
 }
+\examples{
+library(eRm)
+library(psketti)
+
+data("FakeData") # load data
+# restructure fake data
+Fake_Data_scores <- reshape(FakeData[, c("ID", "Item", "X")],
+                            timevar = "Item",
+                            idvar = "ID",
+                            direction = "wide")
+# for eRm col names and row names
+names(Fake_Data_scores) <- c("ID",
+                             paste0("i",
+                                    sprintf(fmt  = "\%02d", 1:23)))
+                                    
+row.names(Fake_Data_scores) <- Fake_Data_scores$ID
+Fake_Data_scores$ID         <- NULL
+
+fake_rm     <- RM(Fake_Data_scores)     # Estimate Rasch model
+
+itemFit_psk <- item_fit_table(fake_rm)  # item fit stats
+MSQplot     <- psketti_msq(itemFit_psk) # Plot infit and outfit
+
+MSQplot
+}
