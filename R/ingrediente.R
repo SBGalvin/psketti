@@ -23,9 +23,11 @@
 #' @export
 #'
 #' @examples
+#' # Example 1
+#' # For dichotomous Rasch model
 #' library(psketti)
 #' data("FakeData")
-#'
+#' 
 #' K_opt <- factor(LETTERS[1:5], levels = LETTERS[1:5], ordered = TRUE)
 #' score_report <- ingrediente(x = FakeData,
 #'                             Item = "Item",
@@ -34,18 +36,17 @@
 #'                             K = "K",
 #'                             K_options = K_opt,
 #'                             Index = "Index")
-#'
+#' 
 #' # show score report for values with a total score <= 5
 #' score_report[score_report$total_score <= 1, ]
-#'
 #' # Score report ordering response string by item difficulty
 #' data("FakeItems")
 #' FI2 <- FakeItems[order(FakeItems$Beta),]
 #' row.names(FI2)<- NULL
 #' FI_factor <- factor(FI2$Item, levels = FI2$Item, ordered = TRUE)
-#'
-#'
-#'
+#' 
+#' 
+#' 
 #' score_report2 <- ingrediente(x = FakeData,
 #'                              Item = "Item",
 #'                              ID = "ID",
@@ -53,13 +54,60 @@
 #'                              K = "K",
 #'                              K_options = K_opt,
 #'                              Index = FI_factor)
-#'
+#' 
 #' # show score report for values with a total score <= 5
 #' score_report2[score_report2$total_score == 21, ]
+#' 
+#' 
+#' # Example 2
+#' # For Rasch partial credit model
+#' library(dplyr)
+#' library(tidyr)
+#' data("FakePCMData")
+#' data("FakePCMItems")
+#' 
+#' # Arrange Data, wide to long
+#' fpcm <- FakePCMData %>% 
+#'   pivot_longer(cols = -ID, values_to = "Response", names_to = "Item") %>% 
+#'   mutate(X = Response) %>% 
+#'   mutate(K = as.character(Response)) %>% 
+#'   mutate(K = recode(K, "0" = "A", "1" = "B", "2" = "C", "3" = "D"))
+#' 
+#' # factor variable: Index for item order
+#' F2            <- FakePCMItems[, c("Item", "Beta")] # extract relevant cols
+#' F2            <- F2[order(F2$Beta),]               # order dataframe
+#' row.names(F2) <-  NULL                             # drop rownames     
+#' 
+#' # create factor variable
+#' F_factor <- factor(F2$Item,
+#'                    levels = F2$Item,
+#'                    ordered = TRUE)
+#' #apply factor to data frame
+#' fpcm$Index <- fpcm$Item                         # Item -> Index
+#' fpcm$Index <- factor(fpcm$Index,
+#'                      levels = levels(F_factor),
+#'                      ordered = TRUE)
+#' 
+#' fpcm      <- as.data.frame(fpcm) # ensure this is a dataframe!!
+#' 
+#' # factor variable for K categories
+#' K_opt     <- factor(LETTERS[1:4],
+#'                     levels = LETTERS[1:4],
+#'                     ordered = TRUE)
+#' # produce score report
+#' score_pcm <- ingrediente(x = fpcm,
+#'                          Item = "Item",
+#'                          ID = "ID",
+#'                          Score = "X",
+#'                          K = "K",
+#'                          Index = "Index",
+#'                          K_options = K_opt)
+#' 
+#' score_pcm[score_pcm$total_score < 2, ] # print out score report
 
-ingrediente <- function(x, ID, Item, Score, K, K_options, Index){
+ingrediente <- function(x, ID, Item, Score, K, K_options, Index=NULL){
 
-  # Add erm functionality for ppar to insert Ability parameter?
+  x <- as.data.frame(x) # to play well with reshape()
 
   #~~~~~~~~~~~~~~~~~~~~~~ Response String Ordering ~~~~~~~~~~~~~~~~~~~~~~~~~#
   # If index is NULL, then create Index from Item column
