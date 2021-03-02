@@ -25,33 +25,37 @@
 #' @examples
 #' library(eRm)
 #' library(psketti)
-#' data(FakeData)  # load dataset fake data
-#'
-#' # Set up dataframe for eRm, long to wide with dichotomous data
+#' 
+#' data("FakeData") # load data
+#' # restructure fake data
 #' Fake_Data_scores <- reshape(FakeData[, c("ID", "Item", "X")],
 #'                             timevar = "Item",
 #'                             idvar = "ID",
 #'                             direction = "wide")
-#'
-#' # Match original item names in score dataframe
-#' names(Fake_Data_scores)     <- c("ID", paste0("i",sprintf(fmt  = "%02d", 1:23)) )
+#' # for eRm col names and row names
+#' names(Fake_Data_scores) <- c("ID",
+#'                              paste0("i",
+#'                                     sprintf(fmt  = "%02d", 1:23)))
+#'                                     
 #' row.names(Fake_Data_scores) <- Fake_Data_scores$ID
 #' Fake_Data_scores$ID         <- NULL
 #'
-#' fake_rm <- RM(Fake_Data_scores) # Fit Rasch Model
+#' fake_rm   <- RM(Fake_Data_scores) # Estimate Rasch model
+
 #'
 #' # Prepare response options factor
-#' r_o <- factor(sort(unique(FakeData$K)), levels = sort(unique(FakeData$K)), ordered = TRUE)
-#'
+#' r_o <- factor(sort(unique(FakeData$K)),          # input var
+#'               levels = sort(unique(FakeData$K)), # factor levels
+#'               ordered = TRUE)                    # ordered
 #' # tabliatellify
-#' tlt_data <- tabliatelle(x = FakeData, eRm.obj = fake_rm,
-#'                         ID = "ID", Item = "Item", K = "K",
+#' tlt_data <- tabliatelle(x = FakeData,
+#'                         eRm.obj = fake_rm,
+#'                         ID = "ID",
+#'                         Item = "Item",
+#'                         K = "K",
 #'                         response_options = r_o)
-#' # clean printout for console
-#' tlt_data
 #'
-#' # access proportions table with un-rounded values
-#' tlt_data$Proportions.table
+#' tlt_data # output
 
 tabliatelle <- function(x, ID, Item, K, response_options, eRm.obj){
 
