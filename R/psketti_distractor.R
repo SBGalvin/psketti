@@ -48,11 +48,12 @@
 #' Fake_Data_scores$ID         <- NULL                 # drop the ID column
 #' fake_rm                     <- RM(Fake_Data_scores) # fit a Rasch Model
 #'
-#' # response option categories
-#' r_o <- factor(sort(unique(FakeData$K)),
-#'               levels = sort(unique(FakeData$K)),
-#'               ordered = TRUE)
+#' # Prepare response options factor
+#' r_o <- factor(sort(unique(FakeData$K)),          # input var
+#'               levels = sort(unique(FakeData$K)), # factor levels
+#'               ordered = TRUE)                    # ordered
 #'
+#' # multiple plots
 #' spag_plot <- psketti_distractor(ID = "ID",              # set ID column
 #'                                 Item = "Item",          # set Item column
 #'                                 K= "K",                 # Set resp categories 
@@ -60,6 +61,9 @@
 #'                                 eRm.obj = fake_rm,      # select eRm object
 #'                                 response_options = r_o, # set resp options
 #'                                 p.style = "present")    # set plotting style
+#' 
+#' spag_plot                         # plot call instructions
+#' spag_plot$Plot.List[['i01']][[1]] # plot item 1
 
 
 
