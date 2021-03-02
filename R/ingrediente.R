@@ -58,7 +58,7 @@
 #' # show score report for values with a total score <= 5
 #' score_report2[score_report2$total_score == 21, ]
 #' 
-#' 
+#' \dontrun{
 #' # Example 2
 #' # For Rasch partial credit model
 #' library(dplyr)
@@ -104,6 +104,7 @@
 #'                          K_options = K_opt)
 #' 
 #' score_pcm[score_pcm$total_score < 2, ] # print out score report
+#' }
 
 ingrediente <- function(x, ID, Item, Score, K, K_options, Index=NULL){
 
