@@ -67,7 +67,7 @@ score_report2 <- ingrediente(x = FakeData,
 # show score report for values with a total score <= 5
 score_report2[score_report2$total_score == 21, ]
 
-
+\dontrun{
 # Example 2
 # For Rasch partial credit model
 library(dplyr)
@@ -113,4 +113,5 @@ score_pcm <- ingrediente(x = fpcm,
                          K_options = K_opt)
 
 score_pcm[score_pcm$total_score < 2, ] # print out score report
+}
 }
