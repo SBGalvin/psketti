@@ -1,0 +1,232 @@
+---
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+```
+# psketti <img src ="img/psketti_hex2.png" align ="right" width="120"/>
+   
+
+
+psketti is a package for generating investigatory plots and tables for Rasch Analysis.
+Models should first be estimated using eRm, psketti then pskettifies your Rasch data
+and produces outputs using ggplot2.    
+
+## Installation
+```{r, eval=FALSE, results='hide'} 
+devtools::install_github("SBGalvin/psketti") # install
+```
+## Loading
+Loading psketti will produce the below startup message. If any of the dependencies are already loaded psketti will tell you. If the dependencies are not installed at the time of the loading psketti will tell you which ones. 
+```{r, warning=FALSE, error=FALSE, message=FALSE}
+library(eRm)
+library(psketti)
+```
+
+```
+-----------------------------------------------------
+Loading psketti v 0.1.0
+Beta Software !!!!
+
+
+Dependencies:
+	eRm		 (1.0.2) already loaded
+	dplyr		 (1.0.4) already loaded
+	ggplot2		 (3.3.3) loaded by psketti
+	viridis		 (0.5.1) loaded by psketti
+
+
+please install any NOT INSTALLED dependencies using:
+install.packages('dependency')
+-----------------------------------------------------
+```
+
+## Investigate Item Response Functions - Dichotomous Rasch Model
+### 1.1 Prepare data
+```{r IRF}
+
+
+data("FakeData") # load data
+# restructure fake data
+Fake_Data_scores <- reshape(FakeData[, c("ID", "Item", "X")],
+                           timevar = "Item",
+                           idvar = "ID",
+                           direction = "wide")
+# for eRm new names
+names(Fake_Data_scores) <- c("ID",
+                             paste0("i",
+                                    sprintf(fmt  = "%02d", 1:23)))
+
+row.names(Fake_Data_scores) <- Fake_Data_scores$ID
+Fake_Data_scores$ID <- NULL
+
+fake_rm   <- RM(Fake_Data_scores) # Estimate Rasch model
+```
+
+### 1.2 pskettify your data
+Convert your data into a format for psketti to use. Select confidence levels for empirical class interval values for empirical Item Chracteristic Curves (ICC), and set the minimum and maximum x axis values for the Rasch Item Response Function (IRF).
+```{r IRFobject}
+psk_data <-pskettify(eRm.obj = fake_rm, conf.level = .95, Theta.lwr = -6, Theta.upr = 6)
+```    
+
+### 1.3 Plot Rasch IRF curves
+Plot IRFs for individual items with empirical ICC, and class interval averages with confidence intervals
+```{r IRFcolour}
+# plot ICC for one item
+psk_1_present <- psketto(psk_data,
+                         style = "present",
+                         item = "i01",
+                         item.label = "i01")
+psk_1_present
+```
+
+
+```{r IRFBW}
+psk_1_print <- psketto(psk_data,
+                       style = "print",
+                       item = "i01",
+                       item.label = "i01")
+psk_1_print
+```
+
+...or use psketti() to plot ICC for all plots. `psketti()` objects printed to the 
+console will print suggestions for how to call a plot.
+
+```{r IRFmulti}
+# plot ICC for one item
+psk_IRF <- psketti(psk_data)
+psk_IRF
+```
+
+```{r IRFmulti2}
+psk_IRF$Plot.List[["i06"]][[1]]
+```
+
+```{r IRFmulti3}
+psk_IRF$Plot.List[["i12"]][[1]]
+```
+
+### 1.4 Item Fit statistics
+
+Produce a table of item fit statistics as per eRm
+```{r Itmfit}
+itemFit_psk <- item_fit_table(fake_rm)
+
+# round ouput to 2 places
+itemFit_psk[, -1] <- round(itemFit_psk[, -1], 2)
+itemFit_psk
+```
+
+
+
+Produce Plot of infit and outfit statistics
+```{r MSQ1}
+psketti_msq(x = itemFit_psk)
+```
+
+
+### 1.5 Investigate distractor options
+
+```{r SAtables}
+# response option categories
+r_o <- factor(sort(unique(FakeData$K)), levels = sort(unique(FakeData$K)), ordered = TRUE)
+tlt_data <- tabliatelle(x = FakeData, ID = "ID", Item = "Item", K = "K", 
+                        response_options = r_o, eRm.obj = fake_rm)
+tlt_data
+```
+
+### 1.6 Plot the distractor empirical ICC against the dichotomous Rasch ICC
+```{r Spagcol}
+# multiple plots
+spag_plot <- psketti_distractor(ID = "ID",              # set ID column
+                                Item = "Item",          # set Item column
+                                K= "K",                 # Set resp categories 
+                                x = FakeData,           # select data
+                                eRm.obj = fake_rm,      # select eRm object
+                                response_options = r_o, # set resp options
+                                p.style = "present")    # set plotting style
+ 
+
+spag_plot$Plot.List[['i01']][[1]] # plot item 1
+```
+
+
+### 1.7 Plot a score report
+```{r ScrReport}
+K_opt <- factor(LETTERS[1:5], levels = LETTERS[1:5], ordered = TRUE)
+score_report <- ingrediente(x = FakeData,
+                            Item = "Item",
+                            ID = "ID",
+                            Score = "X",
+                            K = "K",
+                            K_options = K_opt,
+                            Index = "Index")
+
+# show score report for values with a total score <= 5
+score_report[score_report$total_score <= 1, ]
+```
+
+
+## 2 Rasch Partial Credit Model
+### 2.1 Prepare data
+```{r PCM}
+data("FakePCMData")
+
+F2           <- FakePCMData
+rownames(F2) <- F2$ID
+F2$ID        <- NULL
+
+fake_pcm <- PCM(F2)
+```
+
+### 2.2 pskettify
+```{r PCMpsk}
+psk_pcm <- pskettify(eRm.obj = fake_pcm) # pskettify
+psk_pcm 
+```
+
+### 2.3  Plot PCM ICC
+```{r PCMplot1}
+psk_no_facet <- psketto(pskettified_data = psk_pcm, item = "i01", item.label = "i01")
+psk_no_facet
+```
+
+### 2.3 Plot PCM ICC with facet curves
+```{r PCMplot2}
+psk_facet <- psketto(pskettified_data = psk_pcm, item = "i01", item.label = "i01", facet_curves = TRUE)
+psk_facet
+```
+
+### 2.4 plot all ICC
+By default `psketti()` produces faceted plots for partial credit models
+```{r PCMplot3}
+print_facet <- psketti(pskettified_data = psk_pcm)
+print_facet$Plot.List[['i01']][[1]] # output
+```
+
+However, you can turn off this behaviour by using the `Force_no_facet=True` argument.
+```{r PCMplot4}
+print_no_facet <- psketti(pskettified_data = psk_pcm, p.empICC = FALSE, Force_no_facet = TRUE)
+print_no_facet$Plot.List[['i02']][[1]]
+```
+
+### 2.5 PCM item fit
+Item fit statistic.
+```{r PCMitm}
+fake_ifit <- item_fit_table(eRm.obj = fake_pcm)
+
+# round ouput to 2 places
+fake_ifit[, -c(1, 2)] <- round(fake_ifit[, -c(1, 2)], 2)
+fake_ifit
+```
+
+Infit and Outfit MSQ plot.
+```{r PCMMSQ}
+
+psketti_msq(x = fake_ifit)
+```
+
+
+

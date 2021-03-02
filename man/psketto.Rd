@@ -2,61 +2,86 @@
 % Please edit documentation in R/psketto.R
 \name{psketto}
 \alias{psketto}
-\title{Plot a single ICC}
+\title{Plot a Single ICC}
 \usage{
-\code{psketto(pskettified_data = df, item = "ItemName", item.label = "ItemLabel")}
+psketto(
+  pskettified_data,
+  item,
+  item.label,
+  style = "present",
+  IRFLocation = TRUE,
+  empCI = TRUE,
+  empICC = TRUE,
+  empPoints = TRUE,
+  facet_curves = FALSE
+)
 }
 \arguments{
-\item{pskettified_data}{input data, generated using \code{pskettify()}}
+\item{pskettified_data}{input data, generated using `pskettify()`.}
 
 \item{item}{character name of the item to be plotted}
 
-\item{item.label}{a character string of the item name prefix.}
+\item{item.label}{a character string of the item name to use.}
 
-\item{style}{a character string for plotting style options are present for coloured plots,
-or print for black and white plots. Defaults to "present".}
+\item{style}{a character string for plotting style options are present for
+coloured, or print for black and white. Defaults to "present".}
 
-\item{IRFLocation}{logical, plots reference lines for Rasch IRF location. Defaults to TRUE.}
+\item{IRFLocation}{logical, plots reference lines for Rasch IRF location.
+Defaults to `TRUE`}
 
-\item{empCI}{logical, plots confidence intervals for empirical points, calculated using \code{pskettify()}.
-Defaults to TRUE.}
+\item{empCI}{logical, plots confidence intervals for empirical points,
+calculated using `pskettify()`. Defaults to `TRUE`}
 
-\item{empICC}{logical, plots empirical ICC for item. Defaults to \code{TRUE}.}
+\item{empICC}{logical, plots empirical ICC for item. Defaults to `TRUE`}
 
-\item{empPoints}{logical, plots empirical points for based on class intervals/score groups
-generated with \code{pskettify()}. Defaults to \code{TRUE}}
+\item{empPoints}{logical, plots empirical points for based on class
+intervals/score groups generated with `pskettify()`. Defaults to `TRUE`}
+
+\item{facet_curves}{logical, should the plot be faceted by category curve?
+Applies only to polytomous Rasch models. Defaults to `FALSE`,.}
 }
 \value{
 psketto plot.
 }
 \description{
-psketto is singlular of psketti; (spaghetti <--> spaghetto).
-    This function plots the data for a single item from the output of pskettify()
-    psketto() is also used in psketti to create multiple ICC plots
+psketto is singlular of psketti; (spaghetti <--> spaghetto). 
+    This function plots the data for a single item from the output of 
+    `pskettify()`. `psketto()` is also used in `psketti()` to create
+    multiple ICC plots
 }
 \examples{
 library(eRm)
 library(psketti)
-data(FakeData)  # load dataset fake data
 
-# Set up dataframe for eRm, long to wide with dichotmous data
+data("FakeData") # load data
+# restructure fake data
 Fake_Data_scores <- reshape(FakeData[, c("ID", "Item", "X")],
                             timevar = "Item",
                             idvar = "ID",
                             direction = "wide")
-names(Fake_Data_scores) <- c("ID", paste0("i", sprintf(fmt  = "\%02d", 1:23)))
+# for eRm col names and row names
+names(Fake_Data_scores) <- c("ID",
+                             paste0("i",
+                                    sprintf(fmt  = "\%02d", 1:23)))
+                                    
 row.names(Fake_Data_scores) <- Fake_Data_scores$ID
-Fake_Data_scores$ID <- NULL
+Fake_Data_scores$ID         <- NULL
 
-fake_rm <- RM(Fake_Data_scores) # Fit Rasch Model
+fake_rm   <- RM(Fake_Data_scores) # Estimate Rasch model
 
-psk_data <-pskettify(eRm.obj = fake_rm)
+psk_data  <- pskettify(fake_rm)   # pskettify data
 
 # plot IRF in default colours
-psk_1_present <- psketto(psk.data, style = "present", item = 1, item.label = "Item 1")
-psk_1_present
+psk_1_present <- psketto(psk_data,
+                         style = "present",
+                         item = "i01",
+                         item.label = "i01")
+psk_1_present # plot output
 
 # plot IRF in default greyscale colours
-psk_1_print   <- psketto(psk.data, style = "print", item = 1, item.label = "Item 1")
-psk_1_print
+psk_1_print <- psketto(psk_data,
+                       style = "print",
+                       item = "i01",
+                       item.label = "i01")
+psk_1_print # plot output
 }

@@ -2,71 +2,87 @@
 #'
 #' @name tabliatelle
 #'
-#' @description Implementation of the tabular (Styles and Andrich, 2009) approach to assigning a partial credit scoring system
-#'     to data previously modeled with a dichotomous Rasch model.
-#'
-#' @usage \code{tabliatelle(x = df, ID = "ID", Item = "Item", K = "K", response_options = r_o, eRm.obj =eRm.obj)}
+#' @description Implementation of the tabular (Styles and Andrich, 2009)
+#'     approach to assigning a partial credit scoring system to data previously
+#'     modeled with a dichotomous Rasch model.
 #'
 #' @param x A long formatted dataframe.
 #' @param ID column name for ID column.
 #' @param Item column name for Item column.
 #' @param K column name for column containing multiple choice responses.
-#' @param response_options An ordered factor object to arrange column order in the
-#'     distractor table.
-#' @param Key A vector of the Key (correct answer) or a single character or string.
-#' @param eRm.obj An object of class eRm and model RM. Use \code{eRm::RM(score_data)}
+#' @param response_options An ordered factor object to arrange column order in
+#'     the distractor table.
+#' @param eRm.obj An object of class eRm and model RM. Use `eRm::RM(score_data)`
 #'     to create this object.
 #'
-#' @return tabliatelle returns a list of class tabliatelle containing three elements.
-#' @return Distractor Frequencies is a table containing frequencies for each
-#'     item and response option.
-#' @return Distractor Proportions is a table conatining proportions for each
-#'     item and response option
+#' @return tabliatelle returns a list of class tabliatelle.
 #'
+#' @importFrom stats reshape xtabs
 #' @importFrom ggplot2 ggplot aes geom_segment geom_point geom_line scale_color_manual theme_bw theme ylab xlab
-#' @importFrom psketti nth_element print.tabliatelle
 #'
 #' @export
 #'
 #' @examples
 #' library(eRm)
 #' library(psketti)
-#' data(FakeData)  # load dataset fake data
-#'
-#' # Set up dataframe for eRm, long to wide with dichotomous data
+#' 
+#' data("FakeData") # load data
+#' # restructure fake data
 #' Fake_Data_scores <- reshape(FakeData[, c("ID", "Item", "X")],
 #'                             timevar = "Item",
 #'                             idvar = "ID",
 #'                             direction = "wide")
-#'
-#' # Match original item names in score dataframe
-#' names(Fake_Data_scores)     <- c("ID", paste0("i",sprintf(fmt  = "%02d", 1:23)) )
+#' # for eRm col names and row names
+#' names(Fake_Data_scores) <- c("ID",
+#'                              paste0("i",
+#'                                     sprintf(fmt  = "%02d", 1:23)))
+#'                                     
 #' row.names(Fake_Data_scores) <- Fake_Data_scores$ID
 #' Fake_Data_scores$ID         <- NULL
 #'
-#' fake_rm <- RM(Fake_Data_scores) # Fit Rasch Model
+#' fake_rm   <- RM(Fake_Data_scores) # Estimate Rasch model
+
 #'
 #' # Prepare response options factor
-#' r_o <- factor(sort(unique(FakeData$K)), levels = sort(unique(FakeData$K)), ordered = TRUE)
-#'
+#' r_o <- factor(sort(unique(FakeData$K)),          # input var
+#'               levels = sort(unique(FakeData$K)), # factor levels
+#'               ordered = TRUE)                    # ordered
 #' # tabliatellify
-#' tlt_data <- tabliatelle(x = FakeData, eRm.obj = fake_rm,
-#'                         ID = "ID", Item = "Item", K = "K",
+#' tlt_data <- tabliatelle(x = FakeData,
+#'                         eRm.obj = fake_rm,
+#'                         ID = "ID",
+#'                         Item = "Item",
+#'                         K = "K",
 #'                         response_options = r_o)
-#' # clean printout for console
-#' tlt_data
 #'
-#' # access proportions table with un-rounded values
-#' tlt_data$Proportions.table
+#' tlt_data # output
 
 tabliatelle <- function(x, ID, Item, K, response_options, eRm.obj){
 
 
   # Checks
-  # warning messages for function
-  if(!"eRm" %in% class(eRm.obj)) stop("Object is not of class eRm: Please ensure your input object is an eRm object with model RM.")
+  # stop messages for function
+  if(!"eRm" %in% class(eRm.obj)){
+    stop("Object eRm.obj is not of class eRm:
+         Please ensure your input object is an eRm object with model RM.")
+  } 
 
-  if(!eRm.obj$model == "RM") stop("Model not of type RM. Please ensure eRm object is a fitted Dichotmous Rasch Model; use eRm::RM().")
+  if(!eRm.obj$model %in% c("RM", "PCM")) {
+    stop(paste0("Model not of type RM or PCM.",
+                "\n",
+                "Please ensure eRm object is either a",
+                "\n",
+                "\t",
+                "estimated Dichotmous Rasch Model",
+                "\n", "\t", "\t",
+                "using eRm::RM()",
+                "\n", "\t", "\t", "or", "\n",
+                "\t",
+                "estimated Partial Credit Rasch Model",
+                "\n", "\t", "\t",
+                "using eRm::PCM()"))
+  }
+     
 
 
   # Stage 1 Extract person abilities -----------------------------------------
@@ -131,7 +147,7 @@ tabliatelle <- function(x, ID, Item, K, response_options, eRm.obj){
   Proportions.table <-  df.3[, c("Item", "Beta", "Class_Interval", "Theta_mean",
                                  paste0("Prop.", as.character(response_options)), "Prop.Total")]
   # order by item and class interval levels
-  Frequency.table <- Frequency.table[order(Frequency.table[,1], Frequency.table[,2]), ]
+  Frequency.table   <- Frequency.table[order(Frequency.table[,1], Frequency.table[,2]), ]
   Proportions.table <- Proportions.table[order(Proportions.table[,1], Proportions.table[,2]), ]
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -161,57 +177,6 @@ tabliatelle <- function(x, ID, Item, K, response_options, eRm.obj){
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
   # Output print ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-
-
-  print.tabliatelle <- function(x, ...){
-
-    # https://stackoverflow.com/questions/5237557/extract-every-nth-element-of-a-vector
-    nth_element <- function(vector, starting_position, n) {
-      vector[seq(starting_position, length(vector), n)]
-    }
-
-
-    # rounded df with the last column dropped
-    y <- data.frame(lapply(x$Proportions.table,
-                           function(x) if(is.numeric(x)) round(x, 2) else x))[, -ncol(x$Proportions.table)]
-    y_names <- colnames(y)# <- gsub(pattern = "Theta_mean", replacement = "\U03D1", x = y )
-    y_names <- gsub(pattern = "Theta_mean", replacement = "Theta", y_names)
-    y_names <- gsub(pattern = "Class_Interval", replacement = "Class Interval", y_names)
-    y_names <- gsub(pattern = "Prop.", replacement = "", y_names)
-
-    colnames(y)<- y_names
-
-    # format the item column
-    i_list <- nth_element(as.character(y$Item), 1, 3)
-    i_out <- NULL
-    i <- NULL
-    for (i in 1:length(i_list)) {
-      item_i <- c(i_list[i], rep(" ", 2))
-      i_out <- append(i_out, item_i)
-    }
-
-    # format the beta column
-    b_list <- nth_element(as.character(y$Beta), 1, 3)
-
-    b_out <- NULL
-    b <- NULL
-    for (b in 1:length(b_list)) {
-      beta_b <- c(b_list[b], rep(" ", 2))
-      b_out <- append(b_out, beta_b)
-    }
-    b_out
-
-    y$Item <- i_out
-    y$Beta <- b_out
-
-
-    cat("Class Interval Proportion Table", "\nN Class Intervals: 3", "\n")
-    cat("Class size (n): ",  sprintf("%s: %s", names(x$Class.Size), x$Class.Size), "\n\n")
-    cat("Response Options: ", sprintf("%s: %s", names(x$Response.Options), x$Response.Options), "\n\n")
-
-    cat("Data:\n")
-    print(y)
-  }
 
 
   return(invisible(output_list))

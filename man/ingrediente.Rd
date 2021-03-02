@@ -4,9 +4,11 @@
 \alias{ingrediente}
 \title{Score Report Tables}
 \usage{
-\code{ingrediente(x = df, ID = "ID", Item = "Item", K = "K", K_options = r_o, Index = "Index")}
+ingrediente(x, ID, Item, Score, K, K_options, Index = NULL)
 }
 \arguments{
+\item{x}{a dataframe.}
+
 \item{ID}{column name for ID column}
 
 \item{Item}{column name for Item column}
@@ -15,20 +17,25 @@
 
 \item{K}{column name for column containing multiple choice responses}
 
-\item{K_options}{An ordered factor object to arrange column order in the score table.}
+\item{K_options}{An ordered factor object to arrange column order in the
+score table.}
 
-\item{Index}{Column name for order of administration per participant.
-This can also be an ordered factor for the item names.
-Orders the Response string. Defaults to \code{NULL}, using the items to order the response string.}
+\item{Index}{Column name for order of administration per participant. This
+can also be an ordered factor for the item names. Orders the Response
+string. Defaults to `NULL`, using the items to order the response string.}
 }
 \value{
-Score reports for participants, with counts of category selection and a score string ordered by score string index
+Score reports for participants, with counts of category selection and
+    a score string ordered by score string index
 }
 \description{
 Generates score report for dataframe.
 }
 \examples{
-data(FakeData)
+# Example 1
+# For dichotomous Rasch model
+library(psketti)
+data("FakeData")
 
 K_opt <- factor(LETTERS[1:5], levels = LETTERS[1:5], ordered = TRUE)
 score_report <- ingrediente(x = FakeData,
@@ -41,7 +48,6 @@ score_report <- ingrediente(x = FakeData,
 
 # show score report for values with a total score <= 5
 score_report[score_report$total_score <= 1, ]
-
 # Score report ordering response string by item difficulty
 data("FakeItems")
 FI2 <- FakeItems[order(FakeItems$Beta),]
@@ -60,4 +66,52 @@ score_report2 <- ingrediente(x = FakeData,
 
 # show score report for values with a total score <= 5
 score_report2[score_report2$total_score == 21, ]
+
+\dontrun{
+# Example 2
+# For Rasch partial credit model
+library(dplyr)
+library(tidyr)
+data("FakePCMData")
+data("FakePCMItems")
+
+# Arrange Data, wide to long
+fpcm <- FakePCMData \%>\% 
+  pivot_longer(cols = -ID, values_to = "Response", names_to = "Item") \%>\% 
+  mutate(X = Response) \%>\% 
+  mutate(K = as.character(Response)) \%>\% 
+  mutate(K = recode(K, "0" = "A", "1" = "B", "2" = "C", "3" = "D"))
+
+# factor variable: Index for item order
+F2            <- FakePCMItems[, c("Item", "Beta")] # extract relevant cols
+F2            <- F2[order(F2$Beta),]               # order dataframe
+row.names(F2) <-  NULL                             # drop rownames     
+
+# create factor variable
+F_factor <- factor(F2$Item,
+                   levels = F2$Item,
+                   ordered = TRUE)
+#apply factor to data frame
+fpcm$Index <- fpcm$Item                         # Item -> Index
+fpcm$Index <- factor(fpcm$Index,
+                     levels = levels(F_factor),
+                     ordered = TRUE)
+
+fpcm      <- as.data.frame(fpcm) # ensure this is a dataframe!!
+
+# factor variable for K categories
+K_opt     <- factor(LETTERS[1:4],
+                    levels = LETTERS[1:4],
+                    ordered = TRUE)
+# produce score report
+score_pcm <- ingrediente(x = fpcm,
+                         Item = "Item",
+                         ID = "ID",
+                         Score = "X",
+                         K = "K",
+                         Index = "Index",
+                         K_options = K_opt)
+
+score_pcm[score_pcm$total_score < 2, ] # print out score report
+}
 }

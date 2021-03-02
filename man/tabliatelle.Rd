@@ -4,7 +4,7 @@
 \alias{tabliatelle}
 \title{Distractor Analysis Tables}
 \usage{
-\code{tabliatelle(x = df, ID = "ID", Item = "Item", K = "K", response_options = r_o, eRm.obj =eRm.obj)}
+tabliatelle(x, ID, Item, K, response_options, eRm.obj)
 }
 \arguments{
 \item{x}{A long formatted dataframe.}
@@ -15,55 +15,51 @@
 
 \item{K}{column name for column containing multiple choice responses.}
 
-\item{response_options}{An ordered factor object to arrange column order in the
-distractor table.}
+\item{response_options}{An ordered factor object to arrange column order in
+the distractor table.}
 
-\item{eRm.obj}{An object of class eRm and model RM. Use \code{eRm::RM(score_data)}
+\item{eRm.obj}{An object of class eRm and model RM. Use `eRm::RM(score_data)`
 to create this object.}
-
-\item{Key}{A vector of the Key (correct answer) or a single character or string.}
 }
 \value{
-tabliatelle returns a list of class tabliatelle containing three elements.
-
-Distractor Frequencies is a table containing frequencies for each
-    item and response option.
-
-Distractor Proportions is a table conatining proportions for each
-    item and response option
+tabliatelle returns a list of class tabliatelle.
 }
 \description{
-Implementation of the tabular (Styles and Andrich, 2009) approach to assigning a partial credit scoring system
-    to data previously modeled with a dichotomous Rasch model.
+Implementation of the tabular (Styles and Andrich, 2009)
+    approach to assigning a partial credit scoring system to data previously
+    modeled with a dichotomous Rasch model.
 }
 \examples{
 library(eRm)
 library(psketti)
-data(FakeData)  # load dataset fake data
 
-# Set up dataframe for eRm, long to wide with dichotomous data
+data("FakeData") # load data
+# restructure fake data
 Fake_Data_scores <- reshape(FakeData[, c("ID", "Item", "X")],
                             timevar = "Item",
                             idvar = "ID",
                             direction = "wide")
-
-# Match original item names in score dataframe
-names(Fake_Data_scores)     <- c("ID", paste0("i",sprintf(fmt  = "\%02d", 1:23)) )
+# for eRm col names and row names
+names(Fake_Data_scores) <- c("ID",
+                             paste0("i",
+                                    sprintf(fmt  = "\%02d", 1:23)))
+                                    
 row.names(Fake_Data_scores) <- Fake_Data_scores$ID
 Fake_Data_scores$ID         <- NULL
 
-fake_rm <- RM(Fake_Data_scores) # Fit Rasch Model
+fake_rm   <- RM(Fake_Data_scores) # Estimate Rasch model
 
 # Prepare response options factor
-r_o <- factor(sort(unique(FakeData$K)), levels = sort(unique(FakeData$K)), ordered = TRUE)
-
+r_o <- factor(sort(unique(FakeData$K)),          # input var
+              levels = sort(unique(FakeData$K)), # factor levels
+              ordered = TRUE)                    # ordered
 # tabliatellify
-tlt_data <- tabliatelle(x = FakeData, eRm.obj = fake_rm,
-                        ID = "ID", Item = "Item", K = "K",
+tlt_data <- tabliatelle(x = FakeData,
+                        eRm.obj = fake_rm,
+                        ID = "ID",
+                        Item = "Item",
+                        K = "K",
                         response_options = r_o)
-# clean printout for console
-tlt_data
 
-# access proportions table with un-rounded values
-tlt_data$Proportions.table
+tlt_data # output
 }

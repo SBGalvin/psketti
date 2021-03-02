@@ -1,7 +1,5 @@
 #' @noRd
 #'
-#' @importFrom psketti nth_element
-#'
 #' @keywords internal
 #'
 #' @export
@@ -35,9 +33,9 @@ print.tabliatelle <- function(x, ...){
 
   # format the beta column
   b_list <- nth_element(as.character(y$Beta), 1, 3)
-
-  b_out <- NULL
-  b <- NULL
+  b_out  <- NULL
+  b      <- NULL
+  
   for (b in 1:length(b_list)) {
     beta_b <- c(b_list[b], rep(" ", 2))
     b_out <- append(b_out, beta_b)

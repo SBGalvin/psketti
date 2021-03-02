@@ -4,7 +4,7 @@
 \alias{pskettify}
 \title{pskettify your data}
 \usage{
-\code{pskettify(eRm.obj)}
+pskettify(eRm.obj, conf.level = 0.95, Theta.lwr = -6, Theta.upr = 6)
 }
 \arguments{
 \item{eRm.obj}{an eRm object of class 'RM'.}
@@ -31,20 +31,23 @@ This function extracts data from an eRm object of class 'RM' and
 }
 \examples{
 library(eRm)
-data(FakeData)
+library(psketti)
 
-#source('R/pskettify.R')
-
+data("FakeData") # load data
+# restructure fake data
 Fake_Data_scores <- reshape(FakeData[, c("ID", "Item", "X")],
                             timevar = "Item",
                             idvar = "ID",
                             direction = "wide")
-
-names(Fake_Data_scores) <- c("ID", paste0("i", sprintf(fmt  = "\%02d", 1:23)))
+# for eRm col names and row names
+names(Fake_Data_scores) <- c("ID",
+                             paste0("i",
+                                    sprintf(fmt  = "\%02d", 1:23)))
+                                    
 row.names(Fake_Data_scores) <- Fake_Data_scores$ID
-Fake_Data_scores$ID <- NULL
+Fake_Data_scores$ID         <- NULL
 
-fake_rm <- RM(Fake_Data_scores)
+fake_rm   <- RM(Fake_Data_scores) # Estimate Rasch model
 
-psk_data  <- pskettify(fake_rm)
+psk_data  <- pskettify(fake_rm)   # pskettify data
 }

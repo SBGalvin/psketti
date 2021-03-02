@@ -2,55 +2,73 @@
 % Please edit documentation in R/psketti.R
 \name{psketti}
 \alias{psketti}
-\title{Plot your pskettified data}
+\title{Plot Your pskettified Data}
 \usage{
-\code{psketti(pskettified_data)}
+psketti(
+  pskettified_data,
+  p.style = "present",
+  p.IRFLocation = TRUE,
+  p.empCI = TRUE,
+  p.empICC = TRUE,
+  p.empPoints = TRUE,
+  Force_no_facet = FALSE
+)
 }
 \arguments{
-\item{pskettified_data}{a list object generated from eRm object class'RM' using \code{pskettify()}.}
+\item{pskettified_data}{a list object generated from eRm object class'RM'
+using `pskettify()`.}
 
 \item{p.style}{a character string for plotting style options are present for
 coloured plots, or print for black and white plots. Defaults to "present".}
 
-\item{p.IRFLocation}{logical, plots reference lines for Rasch IRF location. Defaults to TRUE.}
+\item{p.IRFLocation}{logical, plots reference lines for Rasch IRF location.
+Defaults to `TRUE`.}
 
-\item{p.empCI}{logical, plots confidence intervals for empirical points, calculated using \code{pskettify()}.
-Defaults to \code{TRUE}.}
+\item{p.empCI}{logical, plots confidence intervals for empirical points,
+calculated using `pskettify()`. Defaults to `TRUE`.}
 
-\item{p.empICC}{logical, plots empirical ICC for item. Defaults to TRUE.}
+\item{p.empICC}{logical, plots empirical ICC for item. Defaults to `TRUE`.}
 
-\item{p.empPoints}{logical, plots empirical points for based on class intervals/ score
-groups generated with \code{pskettify()}. Defaults to \code{TRUE}.}
+\item{p.empPoints}{logical, plots empirical points for based on class
+intervals/ score groups generated with `pskettify()`. Defaults to `TRUE`.}
+
+\item{Force_no_facet}{a logical, forces psketti to not use facets for
+polytomous models. Defaults to `FALSE`.}
 }
 \value{
-A list object containing multiple psketto plots each element contains the plot
-    object[[1]] and item name object[[2]]
+A list object containing multiple psketto plots.
 }
 \description{
-This function extracts data from an eRm object of class 'RM' and converts to a format for plotting data.
-    This also computes the empirical response values and empirical confidence intervals
+This function extracts data from an eRm object of class 'RM' and
+   converts to a format for plotting data. This also computes the empirical
+   response values and empirical confidence intervals
 }
 \examples{
 library(eRm)
-library(ggplot2)
 library(psketti)
-data(FakeData)  # load dataset fake data
 
-# Set up dataframe for eRm, long to wide with dichotmous data
+data("FakeData") # load data
+# restructure fake data
 Fake_Data_scores <- reshape(FakeData[, c("ID", "Item", "X")],
                             timevar = "Item",
                             idvar = "ID",
                             direction = "wide")
-names(Fake_Data_scores) <- c("ID", paste0("i", sprintf(fmt  = "\%02d", 1:23)))
+# for eRm col names and row names
+names(Fake_Data_scores) <- c("ID",
+                             paste0("i",
+                                    sprintf(fmt  = "\%02d", 1:23)))
+                                    
 row.names(Fake_Data_scores) <- Fake_Data_scores$ID
-Fake_Data_scores$ID <- NULL
+Fake_Data_scores$ID         <- NULL
 
-fake_rm <- RM(Fake_Data_scores) # Fit Rasch Model
+fake_rm   <- RM(Fake_Data_scores) # Estimate Rasch model
 
-psk_data <-pskettify(eRm.obj = fake_rm)
+psk_data  <- pskettify(fake_rm)   # pskettify data
 
-# plot ICC for all item
-psk_IRF <- psketti(psk_data)
-psk_IRF[["i06"]]
-psk_IRF[["i12"]]
+# multiple plots
+multi_plot <- psketti(pskettified_data = psk_data)
+multi_plot # plot call instructions
+
+# print first item plot
+multi_plot$Plot.List[['i01']][[1]]
 }

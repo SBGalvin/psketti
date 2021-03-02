@@ -1,66 +1,83 @@
 #' @title Distractor Analysis Plots
 #'
-#' @name spaghetti_plot_1
+#' @name psketti_distractor
 #'
-#' @description Implementation of a graphical (Asril and Marais, 2011) approach to assigning a partial credit scoring
-#'     system to data previously modeled with a dichotomous Rasch model. The function console output
-#'     prints object information and a list of items and generic example of how to coall the plot.
-#'
-#' @usage \code{spaghetti_plot_1(x = df, Item = "Item", K = "K", response_options = r_o, eRm.obj = eRm.obj)}
+#' @description Implementation of a graphical (Asril and Marais, 2011) approach
+#'     to assigning a partial credit scoring system to data previously estimated
+#'     with a dichotomous Rasch model. The function console output prints object
+#'     details, a list of items, and generic example of how to call the plot.
 #'
 #' @param x A long formatted dataframe
 #' @param ID column name for ID column
 #' @param Item column name for Item column
 #' @param K column name for column containing multiple choice responses.
-#' @param response_options An ordered factor object to arrange column order in the distractor table.
-#' @param eRm.obj An object of class eRm and model RM. Use eRm::RM(score_data) to create this object.
-#' @param p.style Plot output style, "print" for black and white, or "present" for color.
-#'     Defaults to "present".
-#' @param distractor_colours An optional vector of colours for distractor plot lines.
-#'     Must be the same length as response_options. Defaults to NULL for viridis color palette.
+#' @param response_options An ordered factor object to arrange column order in
+#'     the distractor table.
+#' @param eRm.obj An object of class eRm and model RM. Use `eRm::RM(score_data)`
+#'     to create this object. To plot empirical values for PCM see `pskettify`, 
+#'     `psketti` and `psketto`.
+#' @param p.style Plot output style, "print" for black and white, or "present"
+#'     for color. Defaults to "present".
+#' @param distractor_colours An optional vector of colours for distractor plot
+#'     lines. Must be the same length as response_options. Defaults to `NULL`
+#'     for viridis color palette.
 #'
 #' @return Plot.List is a list object containing plots of empirical distractor
 #'     proportions plotted against the dichotomous Rasch IRF.
 #'
+#' @importFrom stats reshape xtabs setNames
 #' @importFrom ggplot2 ggplot aes geom_segment geom_point geom_line scale_colour_manual theme_bw theme ylab xlab
-#' @importFrom psketti print.psketti
 #'
 #' @export
-#'
+#' 
 #' @examples
 #' library(eRm)
 #' library(psketti)
+#' data("FakeData")
 #' Fake_Data_scores <- reshape(FakeData[, c("ID", "Item", "X")],
 #'                             timevar = "Item",
 #'                             idvar = "ID",
 #'                             direction = "wide")
 #'
-#' names(Fake_Data_scores) <- c("ID",                                 # set column names to be equal to original item names
+#' # set column names to be equal to original item names
+#' names(Fake_Data_scores) <- c("ID",                                
 #'                              paste0("i",
 #'                                     sprintf(fmt  = "%02d", 1:23)))
 #'
-#' row.names(Fake_Data_scores) <- Fake_Data_scores$ID                 # set particiant ID as row names
-#' Fake_Data_scores$ID         <- NULL                                # drop the ID column
-#' fake_rm                     <- RM(Fake_Data_scores)                # fit a Rasch Model with eRm
+#' row.names(Fake_Data_scores) <- Fake_Data_scores$ID  # set ID as row names
+#' Fake_Data_scores$ID         <- NULL                 # drop the ID column
+#' fake_rm                     <- RM(Fake_Data_scores) # fit a Rasch Model
 #'
-#' # response option categories
-#' r_o <- factor(sort(unique(FakeData$K)), levels = sort(unique(FakeData$K)), ordered = TRUE)
+#' # Prepare response options factor
+#' r_o <- factor(sort(unique(FakeData$K)),          # input var
+#'               levels = sort(unique(FakeData$K)), # factor levels
+#'               ordered = TRUE)                    # ordered
 #'
-#' spag_plot <- spaghetti_plot_1(ID = "ID",              # set ID column
-#'                               Item = "Item",          # set Item column
-#'                               K= "K",                 # Set Response categories column
-#'                               x = FakeData,           # select data
-#'                               eRm.obj = fake_rm,      # select eRm object data
-#'                               response_options = r_o, # set response options
-#'                               p.style = "present")    # set plotting style
+#' # multiple plots
+#' spag_plot <- psketti_distractor(ID = "ID",              # set ID column
+#'                                 Item = "Item",          # set Item column
+#'                                 K= "K",                 # Set resp categories 
+#'                                 x = FakeData,           # select data
+#'                                 eRm.obj = fake_rm,      # select eRm object
+#'                                 response_options = r_o, # set resp options
+#'                                 p.style = "present")    # set plotting style
+#' 
+#' spag_plot                         # plot call instructions
+#' spag_plot$Plot.List[['i01']][[1]] # plot item 1
 
 
 
-spaghetti_plot_1 <- function(x, ID, Item, K, response_options, eRm.obj, p.style = "present", distractor_colours = NULL){
+psketti_distractor <- function(x, ID, Item, K, response_options,
+                             eRm.obj, p.style = "present", 
+                             distractor_colours = NULL){
 
+  if (!eRm.obj$model == "RM") stop("eRm object not a dichotomous Rasch Model.")
+  # set internal variables to NULL
+  Theta <- K.prop <- NULL
 
   psketto_simple <-  function(pskettified_data, item = item){
 
+    Probs <- NULL
     # an unadorned Rasch ICC
     # Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     z <- pskettified_data
@@ -68,9 +85,9 @@ spaghetti_plot_1 <- function(x, ID, Item, K, response_options, eRm.obj, p.style 
     # Data subset by item
     tmp1 <- z$emp_ICC[z$emp_ICC$Item == item,]
     tmp2 <- z$presp[z$presp$Item == item,]
-
+    tmp3 <- z$ItemDF[z$ItemDF$Item == item,]
     # Item Difficulty/ Location
-    Beta_tmp <- round(unique(tmp2$Beta),2)
+    Beta_tmp <- round(unique(tmp3$Beta),2)
 
     # Plot ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     plt <- ggplot(data = tmp2, aes(x = Theta, y = Probs, group = Item))+
@@ -116,12 +133,12 @@ spaghetti_plot_1 <- function(x, ID, Item, K, response_options, eRm.obj, p.style 
   # prepare counts for plotting using the n cuts
   k_counts <- data.frame(xtabs(~Item+Theta+K, data = df.0))  # Category counts
 
-  T_counts <- data.frame(xtabs(~Item+Theta, data = df.0))    # Counts by Ability group
-  names(T_counts)[names(T_counts) == 'Freq']<- "T.Freq"      # Change column name
+  T_counts <- data.frame(xtabs(~Item+Theta, data = df.0))   # Counts by Ability
+  names(T_counts)[names(T_counts) == 'Freq']<- "T.Freq"     # Change column name
 
-  df.kt <- merge(k_counts, T_counts)                         # merge the two tables
-  df.kt["K.prop"] <- df.kt$Freq/df.kt$T.Freq                 # create proportion columns
-  df.kt$Theta <-  as.numeric(as.character(df.kt$Theta))      # convert Ability to a numeric column
+  df.kt <- merge(k_counts, T_counts)                      # merge the two tables
+  df.kt["K.prop"] <- df.kt$Freq/df.kt$T.Freq              # create prop column
+  df.kt$Theta <-  as.numeric(as.character(df.kt$Theta))   # convert to numeric 
 
 
 
@@ -145,7 +162,7 @@ spaghetti_plot_1 <- function(x, ID, Item, K, response_options, eRm.obj, p.style 
 
     for (j in 1:length(j.list)) {
       x_j <- j.list[j]
-      Beta_tmp <- round(unique(psk_d$presp[psk_d$presp$Item == j.list[j], ]$Beta),2)
+      Beta_tmp <- round(unique(psk_d$ItemDF[psk_d$ItemDF$Item == j.list[j], ]$Beta),2)
 
       d_icc_plt <-  psketto_simple(pskettified_data = psk_d,
                                    item = j.list[j])+
