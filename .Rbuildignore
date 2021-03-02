@@ -1,0 +1,12 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^img$
+^tmp$
+^test$
+^ReadMe.md
+^ReadMe.Rmd
+^psketti_hex2.png
+^LICENSE.md
+^Old$
+^testing$
+^example$
