@@ -1,8 +1,6 @@
 
 # psketti <img src ="img/psketti_hex2.png" align ="right" width="120"/>
 
-## Overview
-
 psketti is a package for generating investigatory plots and tables for
 Rasch Analysis. Models should first be estimated using eRm, psketti then
 pskettifies your Rasch data and produces outputs using ggplot2.
@@ -10,32 +8,40 @@ pskettifies your Rasch data and produces outputs using ggplot2.
 ## Installation
 
 ``` r
-devtools::install_github("SBGalvin/psketti")
+devtools::install_github("SBGalvin/psketti") # install
 ```
 
-## Investigate Item Response Functions - Dichotomous Rasch Model
+## Loading
 
-### (0) Prepare data
+Loading psketti will produce the below startup message. If any of the
+dependencies are already loaded psketti will tell you. If the
+dependencies are not installed at the time of the loading psketti will
+tell you which ones.
 
 ``` r
 library(eRm)
 library(psketti)
 ```
 
-    ## [0;33m--------------------------------------------------------------------------------[0m
-    ## [0;33mLoading psketti v 0.1.0[0m
-    ## [0;41mBeta Software !!!![0m
+    -----------------------------------------------------
+    Loading psketti v 0.1.0
+    Beta Software !!!!
 
-    ## [0;33mDependencies:[0m
-    ##  eRm      (1.0.2) already loaded
-    ##  dplyr        (1.0.4) loaded by [0;33mpsketti[0m
-    ##  ggplot2      (3.3.3) loaded by [0;33mpsketti[0m
-    ##  viridis      (0.5.1) loaded by [0;33mpsketti[0m
 
-    ## 
-    ## please install any NOT INSTALLED dependencies using:
-    ## install.packages('dependency')
-    ## [0;33m--------------------------------------------------------------------------------[0m
+    Dependencies:
+        eRm      (1.0.2) already loaded
+        dplyr        (1.0.4) already loaded
+        ggplot2      (3.3.3) loaded by psketti
+        viridis      (0.5.1) loaded by psketti
+
+
+    please install any NOT INSTALLED dependencies using:
+    install.packages('dependency')
+    -----------------------------------------------------
+
+## Investigate Item Response Functions - Dichotomous Rasch Model
+
+### 1.1 Prepare data
 
 ``` r
 data("FakeData") # load data
@@ -55,7 +61,7 @@ Fake_Data_scores$ID <- NULL
 fake_rm   <- RM(Fake_Data_scores) # Estimate Rasch model
 ```
 
-### (1) pskettify your data
+### 1.2 pskettify your data
 
 Convert your data into a format for psketti to use. Select confidence
 levels for empirical class interval values for empirical Item
@@ -66,7 +72,7 @@ values for the Rasch Item Response Function (IRF).
 psk_data <-pskettify(eRm.obj = fake_rm, conf.level = .95, Theta.lwr = -6, Theta.upr = 6)
 ```
 
-### (2) Plot Rasch IRF curves
+### 1.3 Plot Rasch IRF curves
 
 Plot IRFs for individual items with empirical ICC, and class interval
 averages with confidence intervals
@@ -135,74 +141,53 @@ psk_IRF
     ## 23  i23 objectName$Plot.List[['i23']][[1]]
 
 ``` r
-psk_IRF[["i06"]][[1]]
+psk_IRF$Plot.List[["i06"]][[1]]
 ```
 
-    ## NULL
+![](ReadMe_files/figure-gfm/IRFmulti2-1.png)<!-- -->
 
 ``` r
-psk_IRF[["i12"]][[1]]
+psk_IRF$Plot.List[["i12"]][[1]]
 ```
 
-    ## NULL
+![](ReadMe_files/figure-gfm/IRFmulti3-1.png)<!-- -->
 
-### (3) Item Fit statistics
+### 1.4 Item Fit statistics
 
 Produce a table of item fit statistics as per eRm
 
 ``` r
 itemFit_psk <- item_fit_table(fake_rm)
+
+# round ouput to 2 places
+itemFit_psk[, -1] <- round(itemFit_psk[, -1], 2)
 itemFit_psk
 ```
 
-    ##    Item        Beta         Se    Chisq   df OutfitMSQ  InfitMSQ     OutFitt
-    ## 1   i01  0.07473218 0.06437389 1254.234 1185 1.0575332 1.0314362  1.19980064
-    ## 2   i02 -1.28189942 0.07104544 1050.835 1185 0.8860328 0.9735653 -1.51127705
-    ## 3   i03 -0.50056783 0.06517996 1201.992 1185 1.0134838 0.9762960  0.27300353
-    ## 4   i04 -0.17887946 0.06438207 1162.839 1185 0.9804718 0.9909980 -0.39173330
-    ## 5   i05 -1.80461161 0.07857370 1193.748 1185 1.0065328 0.9570137  0.09763663
-    ## 6   i06  1.11917293 0.07019746 1069.697 1185 0.9019371 0.9567124 -1.40778719
-    ## 7   i07 -0.47414717 0.06508070 1088.756 1185 0.9180065 0.9438708 -1.60341419
-    ## 8   i08  0.03601503 0.06433992 1254.052 1185 1.0573791 1.0287805  1.19900120
-    ## 9   i09  0.38755035 0.06511148 1137.963 1185 0.9594964 0.9737929 -0.79337292
-    ## 10  i10 -0.10577279 0.06432395 1126.507 1185 0.9498373 0.9811678 -1.05193650
-    ## 11  i11 -0.25648292 0.06449334 1200.836 1185 1.0125095 1.0174621  0.27113986
-    ## 12  i12 -1.23514813 0.07052421 1135.532 1185 0.9574466 0.9735758 -0.54897236
-    ## 13  i13  2.31741601 0.09096409 1013.785 1185 0.8547933 0.9167887 -1.07485891
-    ## 14  i14  1.51720873 0.07515240 1055.316 1185 0.8898107 0.9443657 -1.26884835
-    ## 15  i15  0.61556507 0.06617789 1109.526 1185 0.9355190 1.0007062 -1.17645383
-    ## 16  i16 -0.94803181 0.06781848 1206.063 1185 1.0169164 0.9720462  0.28234152
-    ## 17  i17  0.38314744 0.06509527 1138.398 1185 0.9598630 0.9769377 -0.78704627
-    ## 18  i18  0.55221093 0.06583602 1243.398 1185 1.0483964 0.9912305  0.90431354
-    ## 19  i19 -0.06281072 0.06431096 1239.067 1185 1.0447444 1.0396249  0.94144685
-    ## 20  i20  0.44943279 0.06535617 1190.096 1185 1.0034537 1.0092329  0.08394471
-    ## 21  i21  0.74909897 0.06701529 1257.987 1185 1.0606975 0.9967212  1.03495427
-    ## 22  i22 -0.83497156 0.06697671 1094.392 1185 0.9227586 0.9702075 -1.28229933
-    ## 23  i23 -0.51822698 0.06524967 1180.640 1185 0.9954810 1.0257112 -0.06794180
-    ##         InFitt      Disc
-    ## 1   1.13516300 0.4283385
-    ## 2  -0.73316965 0.4281259
-    ## 3  -0.82772937 0.4666679
-    ## 4  -0.31832108 0.4620585
-    ## 5  -0.96227117 0.3686364
-    ## 6  -1.23478089 0.4493425
-    ## 7  -2.00403676 0.4946250
-    ## 8   1.04303508 0.4303681
-    ## 9  -0.91164678 0.4737977
-    ## 10 -0.67966534 0.4718941
-    ## 11  0.63609986 0.4372542
-    ## 12 -0.74646112 0.4206367
-    ## 13 -1.45542877 0.3437275
-    ## 14 -1.36724109 0.4277880
-    ## 15  0.03346979 0.4505710
-    ## 16 -0.87563282 0.4389657
-    ## 17 -0.80087956 0.4723819
-    ## 18 -0.28633011 0.4516323
-    ## 19  1.43105423 0.4212587
-    ## 20  0.32665447 0.4378982
-    ## 21 -0.09462334 0.4388586
-    ## 22 -0.96707020 0.4487284
-    ## 23  0.90012995 0.4233138
+    ##    Item  Beta   Se   Chisq   df OutfitMSQ InfitMSQ OutFitt InFitt Disc
+    ## 1   i01  0.07 0.06 1254.23 1185      1.06     1.03    1.20   1.14 0.43
+    ## 2   i02 -1.28 0.07 1050.83 1185      0.89     0.97   -1.51  -0.73 0.43
+    ## 3   i03 -0.50 0.07 1201.99 1185      1.01     0.98    0.27  -0.83 0.47
+    ## 4   i04 -0.18 0.06 1162.84 1185      0.98     0.99   -0.39  -0.32 0.46
+    ## 5   i05 -1.80 0.08 1193.75 1185      1.01     0.96    0.10  -0.96 0.37
+    ## 6   i06  1.12 0.07 1069.70 1185      0.90     0.96   -1.41  -1.23 0.45
+    ## 7   i07 -0.47 0.07 1088.76 1185      0.92     0.94   -1.60  -2.00 0.49
+    ## 8   i08  0.04 0.06 1254.05 1185      1.06     1.03    1.20   1.04 0.43
+    ## 9   i09  0.39 0.07 1137.96 1185      0.96     0.97   -0.79  -0.91 0.47
+    ## 10  i10 -0.11 0.06 1126.51 1185      0.95     0.98   -1.05  -0.68 0.47
+    ## 11  i11 -0.26 0.06 1200.84 1185      1.01     1.02    0.27   0.64 0.44
+    ## 12  i12 -1.24 0.07 1135.53 1185      0.96     0.97   -0.55  -0.75 0.42
+    ## 13  i13  2.32 0.09 1013.78 1185      0.85     0.92   -1.07  -1.46 0.34
+    ## 14  i14  1.52 0.08 1055.32 1185      0.89     0.94   -1.27  -1.37 0.43
+    ## 15  i15  0.62 0.07 1109.53 1185      0.94     1.00   -1.18   0.03 0.45
+    ## 16  i16 -0.95 0.07 1206.06 1185      1.02     0.97    0.28  -0.88 0.44
+    ## 17  i17  0.38 0.07 1138.40 1185      0.96     0.98   -0.79  -0.80 0.47
+    ## 18  i18  0.55 0.07 1243.40 1185      1.05     0.99    0.90  -0.29 0.45
+    ## 19  i19 -0.06 0.06 1239.07 1185      1.04     1.04    0.94   1.43 0.42
+    ## 20  i20  0.45 0.07 1190.10 1185      1.00     1.01    0.08   0.33 0.44
+    ## 21  i21  0.75 0.07 1257.99 1185      1.06     1.00    1.03  -0.09 0.44
+    ## 22  i22 -0.83 0.07 1094.39 1185      0.92     0.97   -1.28  -0.97 0.45
+    ## 23  i23 -0.52 0.07 1180.64 1185      1.00     1.03   -0.07   0.90 0.42
 
 Produce Plot of infit and outfit statistics
 
@@ -212,7 +197,7 @@ psketti_msq(x = itemFit_psk)
 
 ![](ReadMe_files/figure-gfm/MSQ1-1.png)<!-- -->
 
-### (4) Investigate distractor options
+### 1.5 Investigate distractor options
 
 ``` r
 # response option categories
@@ -300,7 +285,7 @@ tlt_data
     ## 68                         2 -0.04 0.61 0.10 0.08 0.11 0.10
     ## 69                         3  2.16 0.92 0.02 0.01 0.02 0.03
 
-### (5) Plot the distractor empirical ICC against the dichotomous Rasch ICC
+### 1.6 Plot the distractor empirical ICC against the dichotomous Rasch ICC
 
 ``` r
 # multiple plots
@@ -318,7 +303,7 @@ spag_plot$Plot.List[['i01']][[1]] # plot item 1
 
 ![](ReadMe_files/figure-gfm/Spagcol-1.png)<!-- -->
 
-### (6) Plot a score report
+### 1.7 Plot a score report
 
 ``` r
 K_opt <- factor(LETTERS[1:5], levels = LETTERS[1:5], ordered = TRUE)
@@ -380,7 +365,9 @@ score_report[score_report$total_score <= 1, ]
     ## 2311 FAKE_1156           1   Responses DEECECBEBDDDDCEACDDBDCC
     ## 2312 FAKE_1156           1       Score 00000000000000010000000
 
-## Rasch Partial Credit Model
+## 2 Rasch Partial Credit Model
+
+### 2.1 Prepare data
 
 ``` r
 data("FakePCMData")
@@ -391,6 +378,8 @@ F2$ID        <- NULL
 
 fake_pcm <- PCM(F2)
 ```
+
+### 2.2 pskettify
 
 ``` r
 psk_pcm <- pskettify(eRm.obj = fake_pcm) # pskettify
@@ -430,6 +419,8 @@ psk_pcm
     ## 29  i10 c2  2.772 0.104  3.179
     ## 30  i10 c3  5.630 0.177  3.179
 
+### 2.3 Plot PCM ICC
+
 ``` r
 psk_no_facet <- psketto(pskettified_data = psk_pcm, item = "i01", item.label = "i01")
 psk_no_facet
@@ -437,12 +428,16 @@ psk_no_facet
 
 ![](ReadMe_files/figure-gfm/PCMplot1-1.png)<!-- -->
 
+### 2.3 Plot PCM ICC with facet curves
+
 ``` r
 psk_facet <- psketto(pskettified_data = psk_pcm, item = "i01", item.label = "i01", facet_curves = TRUE)
 psk_facet
 ```
 
 ![](ReadMe_files/figure-gfm/PCMplot2-1.png)<!-- -->
+
+### 2.4 plot all ICC
 
 By default `psketti()` produces faceted plots for partial credit models
 
@@ -463,9 +458,51 @@ print_no_facet$Plot.List[['i02']][[1]]
 
 ![](ReadMe_files/figure-gfm/PCMplot4-1.png)<!-- -->
 
+### 2.5 PCM item fit
+
+Item fit statistic.
+
 ``` r
 fake_ifit <- item_fit_table(eRm.obj = fake_pcm)
+
+# round ouput to 2 places
+fake_ifit[, -c(1, 2)] <- round(fake_ifit[, -c(1, 2)], 2)
+fake_ifit
 ```
+
+    ##    Item  K   tau   Se   Chisq   df OutfitMSQ InfitMSQ OutFitt InFitt Disc
+    ## 1   i01 c1 -0.81 0.11 1027.52 1184      0.87     0.91   -2.40  -2.38 0.63
+    ## 2   i01 c2 -1.02 0.11 1027.52 1184      0.87     0.91   -2.40  -2.38 0.63
+    ## 3   i01 c3 -0.81 0.12 1027.52 1184      0.87     0.91   -2.40  -2.38 0.63
+    ## 4   i02 c1 -1.59 0.16 1035.99 1184      0.87     0.90   -2.02  -2.25 0.57
+    ## 5   i02 c2 -2.46 0.16 1035.99 1184      0.87     0.90   -2.02  -2.25 0.57
+    ## 6   i02 c3 -2.58 0.15 1035.99 1184      0.87     0.90   -2.02  -2.25 0.57
+    ## 7   i03 c1 -0.40 0.09 1140.73 1184      0.96     0.93   -0.76  -1.95 0.64
+    ## 8   i03 c2 -0.16 0.10 1140.73 1184      0.96     0.93   -0.76  -1.95 0.64
+    ## 9   i03 c3  0.61 0.11 1140.73 1184      0.96     0.93   -0.76  -1.95 0.64
+    ## 10  i04 c1  0.35 0.08 1076.29 1184      0.91     0.90   -1.94  -2.52 0.62
+    ## 11  i04 c2  1.42 0.10 1076.29 1184      0.91     0.90   -1.94  -2.52 0.62
+    ## 12  i04 c3  3.00 0.12 1076.29 1184      0.91     0.90   -1.94  -2.52 0.62
+    ## 13  i05 c1 -0.83 0.10 1103.97 1184      0.93     0.95   -1.57  -1.38 0.61
+    ## 14  i05 c2 -0.77 0.11 1103.97 1184      0.93     0.95   -1.57  -1.38 0.61
+    ## 15  i05 c3  0.25 0.12 1103.97 1184      0.93     0.95   -1.57  -1.38 0.61
+    ## 16  i06 c1 -2.06 0.20 1068.63 1184      0.90     0.91   -1.27  -1.91 0.53
+    ## 17  i06 c2 -2.98 0.19 1068.63 1184      0.90     0.91   -1.27  -1.91 0.53
+    ## 18  i06 c3 -3.55 0.18 1068.63 1184      0.90     0.91   -1.27  -1.91 0.53
+    ## 19  i07 c1 -0.61 0.09 1090.34 1184      0.92     0.93   -1.79  -1.74 0.63
+    ## 20  i07 c2 -0.18 0.10 1090.34 1184      0.92     0.93   -1.79  -1.74 0.63
+    ## 21  i07 c3  0.76 0.12 1090.34 1184      0.92     0.93   -1.79  -1.74 0.63
+    ## 22  i08 c1  0.87 0.07 1100.26 1184      0.93     0.92   -1.31  -1.83 0.55
+    ## 23  i08 c2  2.70 0.11 1100.26 1184      0.93     0.92   -1.31  -1.83 0.55
+    ## 24  i08 c3  5.14 0.16 1100.26 1184      0.93     0.92   -1.31  -1.83 0.55
+    ## 25  i09 c1 -1.03 0.13 1083.39 1184      0.91     0.90   -1.41  -2.32 0.61
+    ## 26  i09 c2 -1.40 0.12 1083.39 1184      0.91     0.90   -1.41  -2.32 0.61
+    ## 27  i09 c3 -1.38 0.12 1083.39 1184      0.91     0.90   -1.41  -2.32 0.61
+    ## 28  i10 c1  1.14 0.07  984.57 1184      0.83     0.85   -2.95  -3.59 0.56
+    ## 29  i10 c2  2.77 0.10  984.57 1184      0.83     0.85   -2.95  -3.59 0.56
+    ## 30  i10 c3  5.63 0.18  984.57 1184      0.83     0.85   -2.95  -3.59 0.56
+
+Infit and Outfit MSQ plot.
 
 ``` r
 psketti_msq(x = fake_ifit)
