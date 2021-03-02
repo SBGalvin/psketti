@@ -67,6 +67,7 @@ psketti_distractor <- function(x, ID, Item, K, response_options,
                              eRm.obj, p.style = "present", 
                              distractor_colours = NULL){
 
+  if (!eRm.obj$model == "RM") stop("eRm object not a dichotomous Rasch Model.")
   # set internal variables to NULL
   Theta <- K.prop <- NULL
 
