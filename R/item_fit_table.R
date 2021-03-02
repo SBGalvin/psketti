@@ -9,7 +9,8 @@
 #'     
 #' @return A data.frame of class ItemFit.
 #' 
-#' @importFrom stats pchisq
+#' @importFrom stats pchisq na.exclude
+#' @importFrom eRm person.parameter
 #'
 #' @export
 
@@ -55,7 +56,6 @@ item_fit_table <- function(eRm.obj){
     itm.par$Item <- gsub(pattern = "beta ", replacement = "", x = itm.par$Item)
     
    
-    fm_ppar <- person.parameter(fake_pcm)
     XXX <- ppar$X[-ppar$pers.ex,]
    
     # degrees of freedom
