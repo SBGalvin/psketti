@@ -1,7 +1,7 @@
 Package: psketti
 Type: Package
 Title: Generating Investigatory Plots and Tables for Rasch Analysis
-Version: 0.1.1
+Version: 0.1.2
 Author: Shane B. Galvin
 Maintainer: Shane B. Galvin <sbmgalvin@gmail.com>
 Description: psketti generates investigatory plots and tables to assist in
