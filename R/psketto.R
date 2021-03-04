@@ -5,7 +5,7 @@
 #' @description psketto is singlular of psketti; (spaghetti <--> spaghetto). 
 #'     This function plots the data for a single item from the output of 
 #'     `pskettify()`. `psketto()` is also used in `psketti()` to create
-#'     multiple ICC plots
+#'     multiple ICC plots. Based on Asril and Marais (2011).
 #'
 #' @param pskettified_data input data, generated using `pskettify()`.
 #' @param item character name of the item to be plotted
@@ -25,7 +25,7 @@
 #' @return psketto plot.
 #'
 #' @importFrom ggplot2 ggplot aes geom_segment geom_point geom_line scale_colour_manual scale_colour_grey facet_wrap theme_minimal theme ylab xlab ggtitle element_blank
-#' @importFrom viridis scale_color_viridis
+#' @importFrom viridis scale_color_viridis viridis
 #' @export
 #'
 #' @examples
@@ -83,8 +83,8 @@ psketto <- function(pskettified_data, item, item.label, style = "present",
     # Setup colours and labels for plot!!!
     # set stuff for reference lines first
     p_types <- c("Reference")
-    psk_colours_1 <- "grey"
-    psk_colours_2 <- "grey"
+    psk_colours_1 <- "grey40"
+    psk_colours_2 <- "grey40"
     p_labels <- c("Rasch IRF")
     
     
@@ -102,7 +102,7 @@ psketto <- function(pskettified_data, item, item.label, style = "present",
     
     if(empCI == TRUE){
       p_types <- c(p_types, "CI")
-      psk_colours_1 <- c(psk_colours_1, "tomato")
+      psk_colours_1 <- c(psk_colours_1, "#EE4000")
       psk_colours_2 <- c(psk_colours_2, "#545454")
       p_labels <- c(p_labels, "95% ci")
     }else{
@@ -115,7 +115,7 @@ psketto <- function(pskettified_data, item, item.label, style = "present",
     
     if(empPoints == TRUE){
       p_types <- c(p_types, "EmpPoints")
-      psk_colours_1 <- c(psk_colours_1, "tomato4")
+      psk_colours_1 <- c(psk_colours_1, "#AB1128")
       psk_colours_2 <- c(psk_colours_2, "#303030")
       p_labels <- c(p_labels, "Class Interval Proportions")
     }else{
@@ -272,14 +272,23 @@ psketto <- function(pskettified_data, item, item.label, style = "present",
     if(!"pskettified" %in% class(x)) stop("Object is not of class pskettified: Please ensure your input object is pskettified with psketti::pskettify()")
     
     
-    # Data subset by item
+    # Data subset by item ~~~~~~~~~~~~~
     tmp1 <- x$emp_ICC[x$emp_ICC$Item == item,]
     tmp2 <- x$presp[x$presp$Item == item,]
     tmp3 <- x$ItemDF[x$ItemDF$Item == item,]
-    # Item Difficulty/ Location
+    
+    # Item Difficulty/ Location ~~~~~~~
     Beta_tmp <- round(unique(tmp3$Beta),2)
     
-    # Item label
+    # set colours for plot ~~~~~~~~~~
+    K_unique <- length(unique(tmp1$K))
+    K_cols   <- viridis(K_unique)
+    # Replace viridis light yellow: "#fde725ff"
+    # "#FF4500" a red orange colour
+    # "#F7B900" a gold colour
+    K_cols[K_unique] <- "#F7B900"
+    
+    # Item label ~~~~~~~~~~~~~~~~~~~~
     if (nchar(item.label) == 0){
       I_label <- ifelse(
         grepl(x = item, "Item") | grepl(x = item, "item"),
@@ -290,14 +299,13 @@ psketto <- function(pskettified_data, item, item.label, style = "present",
     } else {
       I_label <- item.label
     }
-    # If the user selectsempICC and emPoints to be T
-    #empICC = TRUE, empPoints = TRUE
+    
     
     # Plot ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Intentionally a simpler plot
     plt <- ggplot(data = tmp2, 
                   aes(x = Theta, y = Probs, colour = K))+
-      geom_line()+
+      geom_line(aes(alpha = .5), show.legend = FALSE)+    # addded alpha
       xlab(expression("Latent Dimension" ~theta))+
       ylab(expression(Pr(X[ni]~"="~x~"|"~theta)))
     
@@ -315,7 +323,11 @@ psketto <- function(pskettified_data, item, item.label, style = "present",
       # empirical points
       plt <- plt +
         geom_point(data = tmp1,
-                   aes(x = Theta, y = Prop, colour = K))
+                   aes(x = Theta, 
+                       y = Prop, 
+                       colour = K))#
+                   #shape = 21,        # Dropped shape aes; using default
+                   #fill = 'white')    # Dropped fill aes
       
     } else if (empPoints == FALSE){
       plt <- plt
@@ -325,7 +337,8 @@ psketto <- function(pskettified_data, item, item.label, style = "present",
     if (style == "present"){
       # colour style viridis
       plt <- plt + 
-        scale_color_viridis(discrete = T, name = bquote(.(I_label)~"Location "~theta~"="~.(Beta_tmp)~": "))+
+        scale_color_manual(values = K_cols, name = bquote(.(I_label)~"Location "~theta~"="~.(Beta_tmp)~": "))+
+        #scale_color_viridis(discrete = T, name = bquote(.(I_label)~"Location "~theta~"="~.(Beta_tmp)~": "))+
         theme_minimal()+
         theme(legend.position = "bottom")
       

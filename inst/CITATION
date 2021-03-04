@@ -1,0 +1,112 @@
+citHeader("To cite psketti in use:")
+year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date)
+vers <- meta$Version
+# Package Citation
+citEntry(
+  header = paste0("\n", paste0(rep("#", getOption("width")-1L), collapse=""), "\nThe current Package Version:\n"),
+  entry  = "MANUAL",
+  title  = "{psketti}",
+  author = "S.B. Galvin",
+  year   = year,
+  note   = vers,
+  url    = "https://cran.r-project.org/package=eRm",
+  textVersion = paste0(
+    "Galvin, S.B. (",
+    year,
+    "). psketti. ",
+    vers,
+    ". https://github.com/SBGalvin/psketti"
+  )
+)
+
+citation("eRm")[1]
+
+citation("ggplot2")
+
+citation("viridis")
+
+citation("dplyr")
+
+citEntry(
+  header = paste0("\n", paste0(rep("#", getOption("width")-1L), collapse=""), "\nBook Chapter about Class Interval tables:\n"),
+  entry = "InBook",
+  author =  c(person("D", "Andrich"), person("I", "Styles")),
+  chapter =  "Distractors with information in multiple choice items: A rationale based on the Rasch model",
+  title = "Criterion referenced testing: Practice analysis to score reporting using Rasch measurement models",
+  editor = " E. V., Smith, Jr., and G. E., Stone",
+  year = "2009",
+  page = "24--70",
+  publisher = "{JAM press}",
+  address = "{Maple Grove, MN}",
+  country = "{USA}",
+  textVersion = paste0(
+    "Andrich, D., & Styles, I ", "(2009). ",
+    "Distractors with information in multiple choice items: ", 
+    "A rationale based on the Rasch model. ",
+    "In E. V. Smith, Jr. & G. E. Stone (Eds.), ",
+    "Criterion referenced testing: Practice analysis to score reporting using Rasch measurement models ",
+    "(pp. 24-70). ", "Maple Grove, MN: ", "JAM Press."
+  )
+)
+
+
+
+citEntry(
+  header = paste0("\n", paste0(rep("#", getOption("width")-1L), collapse=""), "\nBook Chapter about Distractor Plots:\n"),
+  entry = "InBook",
+  author = c(person("A", "Asril"), person("I", "Marais")),
+  chapter =  "{Applying a Rasch Model Distractor Analysis: Implications for Teaching and Learning}",
+  title = "{Applications of Rasch Measurement in Learning Environments Research (Vol 2).}",
+  editor = "R.F. Cavanagh, and R.F. Waugh",
+  year = 2011,
+  page = "77--100",
+  publisher = "{Sense Publishers}",
+  city = "{Rotterdam}",
+  country = "{Netherlands}",
+  textVersion = paste0(
+    "Asril, A., & Marais, I ", "(2011). ",
+    "Applying a Rasch Model Distractor Analysis: Implications for Teaching and Learning. ", 
+    "In R.F. Cavanagh & R.F. Waugh (Eds.), ",
+    "Applications of Rasch Measurement in Learning Environments Research (Vol 2). ",
+    "(pp. 77-100). ", "Rotterdam, Netherlands: ", "Sense Publishers."
+  )
+)
+
+
+citEntry(
+  header = paste0("\n", paste0(rep("#", getOption("width")-1L), collapse=""), "\nBook Chapter about Plotting Infit and Outfit\n"),
+  entry = "Inbook",
+  author = c(person("C.H.", "Yu")),
+  chapter =  "{Objective Measurement: How Rasch Modeling Can Simplify and Enhance Your Assessment}",
+  title = "{Rasch Measurement: Applications in Quantitative Educational Research}",
+  editor = "M.S. Khine",
+  year = 2020,
+  page = "47--73",
+  publisher = "{Springer Singapore}",
+  country = "{Singapore}",
+  textVersion = paste0(
+    "Yu , CH ", "(2020). ",
+    "Objective Measurement: How Rasch Modeling Can Simplify and Enhance Your Assessment. ", 
+    "In M.S. Khine (Ed.), ",
+    "Rasch Measurement: Applications in Quantitative Educational Research. ",
+    "(pp. 47-73). ", "Singapore ", "Springer Singapore."
+  )
+)
+
+
+citEntry(
+  header = paste0("\n", paste0(rep("#", getOption("width")-1L), collapse=""), "\nArticle about Simulating Rasch Data\n"),
+  entry = "ARTICLE",
+  author = c(person(given = "John", middle = "Michael","Linacre")),
+  title = "{How to Simulate Rasch Data}",
+  year = 2007,
+  journal = "{Rasch Measurement Transactions}",
+  volume = 21,
+  number = 3,
+  page = "1125",
+  textVersion = paste0(
+    "Linacre, J.M. ", "(2007). ",
+    "How to Simulate Rasch Data, ",
+    "Rasch Measurement Transactions 21(3), 1125"
+  )
+)

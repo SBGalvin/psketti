@@ -21,6 +21,9 @@ print.tabliatelle <- function(x, ...){
   y_names <- gsub(pattern = "Prop.", replacement = "", y_names)
 
   colnames(y)<- y_names
+  # Order the y dataframe
+  #y$Class_Interval <- factor(y$Class_Interval)
+  #y <- y[order(y$Item, y$Class_Interval),]
 
   # format the item column
   i_list <- nth_element(as.character(y$Item), 1, 3)

@@ -25,7 +25,7 @@ to create this object.}
 tabliatelle returns a list of class tabliatelle.
 }
 \description{
-Implementation of the tabular (Styles and Andrich, 2009)
+Implementation of the tabular (Andrich and Styles, 2009)
     approach to assigning a partial credit scoring system to data previously
     modeled with a dichotomous Rasch model.
 }

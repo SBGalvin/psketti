@@ -2,7 +2,7 @@
 #'
 #' @name tabliatelle
 #'
-#' @description Implementation of the tabular (Styles and Andrich, 2009)
+#' @description Implementation of the tabular (Andrich and Styles, 2009)
 #'     approach to assigning a partial credit scoring system to data previously
 #'     modeled with a dichotomous Rasch model.
 #'
@@ -141,19 +141,22 @@ tabliatelle <- function(x, ID, Item, K, response_options, eRm.obj){
 
 
 
-  # output table
-  Frequency.table <- df.3[, c("Item", "Beta", "Class_Interval", "Theta_mean",
-                              paste0("Freq.", as.character(response_options)), "Freq.Total")]
+  # output tables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Frequency.table   <- df.3[, c("Item", "Beta", "Class_Interval", "Theta_mean",
+                                paste0("Freq.", as.character(response_options)),
+                                "Freq.Total")]
   Proportions.table <-  df.3[, c("Item", "Beta", "Class_Interval", "Theta_mean",
-                                 paste0("Prop.", as.character(response_options)), "Prop.Total")]
+                                 paste0("Prop.", as.character(response_options)), 
+                                 "Prop.Total")]
+  
   # order by item and class interval levels
-  Frequency.table   <- Frequency.table[order(Frequency.table[,1], Frequency.table[,2]), ]
-  Proportions.table <- Proportions.table[order(Proportions.table[,1], Proportions.table[,2]), ]
+  Frequency.table   <- Frequency.table[order(Frequency.table$Item, Frequency.table$Class_Interval), ]
+  Proportions.table <- Proportions.table[order(Proportions.table$Item, Proportions.table$Class_Interval), ]
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
   # Class Size ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-  c_size <- unique(Frequency.table[,c("Class_Interval", "Freq.Total")])
-  Class_N <- as.vector(c_size["Freq.Total"])
+  c_size         <- unique(Frequency.table[,c("Class_Interval", "Freq.Total")])
+  Class_N        <- as.vector(c_size["Freq.Total"])
   names(Class_N) <- as.character(c_size["Class_Interval"])
 
 
@@ -170,7 +173,8 @@ tabliatelle <- function(x, ID, Item, K, response_options, eRm.obj){
   output_list[[3]] <- Class_N
   output_list[[4]] <- Frequency.table
   output_list[[5]] <- Proportions.table
-  names(output_list) <- c("Model", "Response.Options", "Class.Size", "Frequency.table", "Proportions.table")
+  names(output_list) <- c("Model", "Response.Options", "Class.Size",
+                          "Frequency.table", "Proportions.table")
 
   # apply class name
   class(output_list) <- c("tabliatelle")

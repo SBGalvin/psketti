@@ -47,7 +47,7 @@ psketto plot.
 psketto is singlular of psketti; (spaghetti <--> spaghetto). 
     This function plots the data for a single item from the output of 
     `pskettify()`. `psketto()` is also used in `psketti()` to create
-    multiple ICC plots
+    multiple ICC plots. Based on Asril and Marais (2011).
 }
 \examples{
 library(eRm)
