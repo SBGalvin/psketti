@@ -19,7 +19,7 @@ and produces outputs using ggplot2.
 devtools::install_github("SBGalvin/psketti") # install
 ```
 ## Loading
-Loading psketti will produce the below startup message. If any of the dependencies are already loaded psketti will tell you. If the dependencies are not installed at the time of the loading psketti will tell you which ones. 
+Loading psketti will produce the below startup message. If any of the dependencies are already loaded, psketti will tell you. If the dependencies are not installed at the time of the loading, psketti will tell you which ones to install. 
 ```{r, warning=FALSE, error=FALSE, message=FALSE}
 library(eRm)
 library(psketti)
@@ -66,7 +66,7 @@ fake_rm   <- RM(Fake_Data_scores) # Estimate Rasch model
 ```
 
 ### 1.2 pskettify your data
-Convert your data into a format for psketti to use. Select confidence levels for empirical class interval values for empirical Item Chracteristic Curves (ICC), and set the minimum and maximum x axis values for the Rasch Item Response Function (IRF).
+Convert your data into a format for psketti to use. Select confidence levels for empirical class interval values for empirical Item Characteristic Curves (ICC), and set the minimum and maximum x axis values for the Rasch Item Response Function (IRF).
 ```{r IRFobject}
 psk_data <-pskettify(eRm.obj = fake_rm, conf.level = .95, Theta.lwr = -6, Theta.upr = 6)
 ```    
@@ -153,7 +153,7 @@ spag_plot$Plot.List[['i01']][[1]] # plot item 1
 ```
 
 
-### 1.7 Plot a score report
+### 1.7 Print a score report
 ```{r ScrReport}
 K_opt <- factor(LETTERS[1:5], levels = LETTERS[1:5], ordered = TRUE)
 score_report <- ingrediente(x = FakeData,
@@ -164,7 +164,7 @@ score_report <- ingrediente(x = FakeData,
                             K_options = K_opt,
                             Index = "Index")
 
-# show score report for values with a total score <= 5
+# show score report for values with a total score <= 1
 score_report[score_report$total_score <= 1, ]
 ```
 
