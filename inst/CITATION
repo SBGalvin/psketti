@@ -1,5 +1,5 @@
 citHeader("To cite psketti in use:")
-year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date)
+
 vers <- meta$Version
 # Package Citation
 citEntry(
@@ -7,12 +7,12 @@ citEntry(
   entry  = "MANUAL",
   title  = "{psketti}",
   author = "S.B. Galvin",
-  year   = year,
+  year   = 2021,
   note   = vers,
   url    = "https://cran.r-project.org/package=eRm",
   textVersion = paste0(
     "Galvin, S.B. (",
-    year,
+    2021,
     "). psketti. ",
     vers,
     ". https://github.com/SBGalvin/psketti"
