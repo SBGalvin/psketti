@@ -18,7 +18,7 @@ MSQ plot.
 }
 \description{
 This function plots the Infit and Outfit MSQ values from a item
-    of class ItemFit. see `item_fit_table()`.
+    of class ItemFit. see `item_fit_table()`. Based on Yu (2020).
 }
 \examples{
 library(eRm)

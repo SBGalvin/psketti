@@ -1,7 +1,7 @@
 Package: psketti
 Type: Package
 Title: Generating Investigatory Plots and Tables for Rasch Analysis
-Version: 0.1.0
+Version: 0.1.1
 Author: Shane B. Galvin
 Maintainer: Shane B. Galvin <sbmgalvin@gmail.com>
 Description: psketti generates investigatory plots and tables to assist in
@@ -23,8 +23,11 @@ Imports:
     RColorBrewer (>= 1.1.2),
     stats (>= 4.0.2)
 Suggests: 
-    tidyverse (>= 1.3.0)
+    tidyverse (>= 1.3.0),
+    knitr,
+    rmarkdown
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
+VignetteBuilder: knitr
