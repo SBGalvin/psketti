@@ -10,19 +10,27 @@ agreements are included below):
   + MIT License
 - eRm
   + GPL V3 license
-  + complete functions: 
+  + complete functions:
       + person.parameter
       + itemfit
   Internal functions:
       + plist.internal
       + ci.L ci.U CINT
+- Indie Flower Font
+  + SIL Open Font License (OFL) 1.1
+
+
+
+Indie Flower Font License
+-------------------------------------------------------------------------------
+IndieFlower.ttf: Copyright (c) 2010, Kimberly Geswein (kimberlygeswein.com kimberlygeswein@gmail.com)
 
 
 
 ggplot2 License
 -------------------------------------------------------------------------------
   H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.
-  
+
 YEAR: 2020
 COPYRIGHT HOLDER: ggplot2 Author
 
@@ -41,7 +49,7 @@ dplyr license
 -------------------------------------------------------------------------------
 Hadley Wickham, Romain François, Lionel Henry and Kirill Müller (2021). dplyr: A Grammar of Data Manipulation. R
   package version 1.0.4. https://CRAN.R-project.org/package=dplyr
-  
+
 YEAR 2013-2019
 COPYRIGHT HOLDER: RStudio
 
@@ -60,7 +68,7 @@ viridis license
 -------------------------------------------------------------------------------
 Simon Garnier (2018). viridis: Default Color Maps from 'matplotlib'. R package version 0.5.1.
   https://CRAN.R-project.org/package=viridis
-  
+
 YEAR: 2015
 COPYRIGHT HOLDER: Simon Garnier
 
