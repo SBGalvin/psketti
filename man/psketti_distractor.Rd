@@ -28,7 +28,7 @@ psketti_distractor(
 the distractor table.}
 
 \item{eRm.obj}{An object of class eRm and model RM. Use `eRm::RM(score_data)`
-to create this object. To plot empirical values for PCM see `pskettify`, 
+to create this object. To plot empirical values for PCM see `pskettify`,
 `psketti` and `psketto`.}
 
 \item{p.style}{Plot output style, "print" for black and white, or "present"
@@ -58,7 +58,7 @@ Fake_Data_scores <- reshape(FakeData[, c("ID", "Item", "X")],
                             direction = "wide")
 
 # set column names to be equal to original item names
-names(Fake_Data_scores) <- c("ID",                                
+names(Fake_Data_scores) <- c("ID",
                              paste0("i",
                                     sprintf(fmt  = "\%02d", 1:23)))
 
@@ -74,7 +74,7 @@ r_o <- factor(sort(unique(FakeData$K)),          # input var
 # multiple plots
 spag_plot <- psketti_distractor(ID = "ID",              # set ID column
                                 Item = "Item",          # set Item column
-                                K= "K",                 # Set resp categories 
+                                K= "K",                 # Set resp categories
                                 x = FakeData,           # select data
                                 eRm.obj = fake_rm,      # select eRm object
                                 response_options = r_o, # set resp options
