@@ -86,30 +86,7 @@ psketti_distractor <- function(x, ID, Item, K, response_options,
   Item <- 'Item'
   K    <- 'K'
 
-  #psketto_simple <-  function(pskettified_data, item = item){
-#
-  #  Probs <- NULL
-  #  # an unadorned Rasch ICC
-  #  # Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-  #  z <- pskettified_data
-#
-  #  # Data subset by item
-  #  tmp1 <- z$emp_ICC[z$emp_ICC$Item == item,]
-  #  tmp2 <- z$presp[z$presp$Item == item,]
-  #  tmp3 <- z$ItemDF[z$ItemDF$Item == item,]
-  #  # Item Difficulty/ Location
-  #  Beta_tmp <- round(unique(tmp3$Beta),2)
-#
-  #  # Plot ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-  #  plt <- ggplot(data = tmp2, aes(x = Theta, y = Probs, group = Item))+
-  #    # Theoretical Rasch ICC
-  #    geom_line(colour = "black", lty = "solid")
-#
-  #  return(plt)
-#
-  #}
-
-  #x <- pskettified_data
+ 
   Model_type <- class(eRm.obj)[1]
 
 
