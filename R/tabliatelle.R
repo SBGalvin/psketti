@@ -84,6 +84,16 @@ tabliatelle <- function(x, ID, Item, K, response_options, eRm.obj){
   }
      
 
+  
+  # rename columns for clean output ~~~~~~~~~~~~~~~~~~~~~~~
+  names(x)[names(x) == ID]    <- 'ID'
+  names(x)[names(x) == Item]  <- 'Item'
+  names(x)[names(x) == K]     <- 'K'
+  
+  # rename input args ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ID   <- "ID"
+  Item <- 'Item'
+  K    <- 'K'
 
   # Stage 1 Extract person abilities -----------------------------------------
   ppar <- eRm::person.parameter(eRm.obj)
