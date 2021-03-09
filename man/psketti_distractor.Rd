@@ -12,7 +12,8 @@ psketti_distractor(
   response_options,
   eRm.obj,
   p.style = "present",
-  distractor_colours = NULL
+  distractor_colours = NULL,
+  ncut = 10
 )
 }
 \arguments{
@@ -37,6 +38,10 @@ for color. Defaults to "present".}
 \item{distractor_colours}{An optional vector of colours for distractor plot
 lines. Must be the same length as response_options. Defaults to `NULL`
 for viridis color palette.}
+
+\item{ncut}{Number of cut points to use for the theta axis. Defaults to
+ncut = 10. You can also set ncut = "Raw" to use the raw theta scores;
+which is only advisable if the ability data is uniformly distributed.}
 }
 \value{
 Plot.List is a list object containing plots of empirical distractor
