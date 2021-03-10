@@ -96,7 +96,6 @@ report_gen <- function(item.names, eRm.obj, data.long, Title, ptrn, ID, Item, K,
                         "library(tidyverse)", "\n",
                         "library(eRm)", "\n",
                         "library(psketti)", "\n","\n",
-                        "source('D:/Thesis/PhD_Sci/R_Projects_for_Writeup/Test_New_Stuff_Private/R/al_dente.R')", "\n","\n",
 
                         "# Load Data ~~~~~~~~~", "\n",
                         'load(paste0("data.long", ".Rdata"))',  "\n",
